@@ -13,6 +13,7 @@ const sfx = fs.existsSync(sfxDir) ? Object.fromEntries(fs.readdirSync(sfxDir).fi
   .map(f => [f.replace(/\.\w+$/, ''), `data:${SMIME[f.split('.').pop()]};base64,${rd('public/sfx/' + f).toString('base64')}`])) : {};
 const js = s => `<script>\n${s.replace(/<\/script/gi, '<\\/script')}\n</script>`;
 let html = rd('index.html').toString()
+  .replace('href="public/img/Resource_Gold_20x18.gif"', () => `href="${uri('public/img/Resource_Gold_20x18.gif')}"`)
   .replace('<link rel="stylesheet" href="css/style.css">', () => `<style>\n${css}\n</style>`)
   .replace('<script src="js/data.js"></script>', () => js(`window.INLINE_IMG=${JSON.stringify(img)};window.INLINE_UI=${JSON.stringify(ui)};window.INLINE_SFX=${JSON.stringify(sfx)};`) + js(rd('js/data.js').toString()))
   .replace('<script src="js/sfx.js"></script>', () => js(rd('js/sfx.js').toString()))

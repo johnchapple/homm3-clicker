@@ -88,3 +88,9 @@ footer{margin:8px 0 20px}
 .ucard .q{font:700 1.6em var(--f-head);opacity:.6}
 .herobox{display:flex;gap:10px;align-items:center}.herobox img{width:70px;border:2px solid var(--gold)}
 .trade{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin:3px 0}.trade img{width:20px}.trade b{min-width:62px}.trade button{padding:0 6px;font-size:.75em;margin:0}
+
+/* fill image containers (crop instead of letterbox) */
+.row .pic img,.row .pic.tall img{width:100%;height:100%;max-width:none;max-height:none;object-fit:cover;margin:0}
+.ucard img{width:100%;height:100%;max-width:none;max-height:none;object-fit:cover}
+.ucard.hero img{height:auto;aspect-ratio:58/64}
+.ucard{padding:0}

@@ -234,7 +234,7 @@
   }
   function ascend(force) {
     const p = pendingGrail(); if (p < 1) return;
-    if (!force && !confirm(`Dig up the Grail? Your kingdom resets, but you gain ${p} Grail point(s) (+${fmt(p * 2)}% production forever).`)) return;
+    if (!force) { ask(`<h2>Dig for the Grail?</h2><p>Your kingdom resets, but you gain <b>${fmt(p)}</b> Grail point(s) (+${fmt(p * 2)}% production forever).</p>`, 'Dig!', () => ascend(true)); return; }
     const keep = { lifetime: S.lifetime, clicks: S.clicks, clickGold: S.clickGold, grail: S.grail + p, ascensions: S.ascensions + 1, chests: S.chests, ach: S.ach,
       started: S.started, towns: S.towns, relics: S.relics, hero: S.hero, heroHires: S.heroHires, trades: S.trades };
     S = fresh(keep); removeWander(); SFX.play('grail');
@@ -325,8 +325,12 @@
     const t = document.createElement('div'); t.className = 'toast'; t.innerHTML = html; $('toasts').appendChild(t);
     setTimeout(() => t.remove(), 5000); while ($('toasts').children.length > 4) $('toasts').firstChild.remove();
   }
-  function modal(html) { $('modalBody').innerHTML = html; $('modal').classList.remove('hidden'); }
+  // In-game dialogs. Native confirm() is blocked in sandboxed iframes (like the artifact preview), so never use it.
+  let onYes = null;
+  function modal(html) { onYes = null; $('modalBody').innerHTML = html; $('modalYes').classList.add('hidden'); $('modalClose').textContent = 'OK'; $('modal').classList.remove('hidden'); }
+  function ask(html, yes, fn) { modal(html); onYes = fn; $('modalYes').textContent = yes; $('modalYes').classList.remove('hidden'); $('modalClose').textContent = 'Cancel'; }
   $('modalClose').onclick = () => $('modal').classList.add('hidden');
+  $('modalYes').onclick = () => { $('modal').classList.add('hidden'); const f = onYes; onYes = null; if (f) f(); };
   const tip = $('tip');
   function showTip(el, html) {
     tip.innerHTML = html; tip.classList.remove('hidden');
@@ -466,7 +470,7 @@
         $('saveBtn').onclick = () => { save(); toast('Game saved.'); };
         $('exportBtn').onclick = () => { save(); $('saveText').value = enc(S); $('saveText').select(); };
         $('importBtn').onclick = () => { try { load($('saveText').value); dirty = true; save(); toast('Save imported.'); } catch (e) { toast('<b>Import failed</b><br>That save string is not valid.'); } };
-        $('resetBtn').onclick = () => { if (confirm('Erase ALL progress including Grail points?')) { S = fresh(); removeWander(); changed(); save(); } };
+        $('resetBtn').onclick = () => { ask('<h2>Hard reset?</h2><p>Erase ALL progress, including Grail points and artifacts?</p>', 'Erase everything', () => { S = fresh(); removeWander(); changed(); save(); }); };
         body.querySelectorAll('[data-sp]').forEach(b => b.onclick = () => { speed = +b.dataset.sp; dirty = true; });
         $('dbgGold').onclick = () => earn(Math.max(1000, gps(false) * 3600));
         $('dbgRes').onclick = () => { D.RES.forEach(r => S.res[r] += 1000); };
