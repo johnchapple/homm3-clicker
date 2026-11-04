@@ -44,15 +44,21 @@ Missing files fall back to the synthesized sound. `build-single.mjs` inlines wha
 Original game audio is copyrighted, so it isn't committed here.
 
 ## Gameplay
-- Click the treasure chest for gold. Recruit creatures from dwellings (cost x1.15 per purchase).
-- Upgrades: upgraded creature forms (x3) and Veteran/Elite/Legendary drills (x2) at 25/50/100 owned.
-- Town buildings (Marketplace, Town Hall, Treasury, Capitol, ...) give global bonuses and cost wood/ore/rare resources.
-- Mines produce Wood, Ore, Mercury, Sulfur, Crystal and Gems.
-- Hero secondary skills: Estates, Leadership, Logistics, Diplomacy, Luck, Wisdom.
-- Wandering artifacts appear briefly: Endless Sack of Gold (x7 gold for 77s), Endless Purse of Gold, Angel Wings (x77 clicks), Cornucopia.
+- Click the treasure chest for gold. Recruit creatures (price x1.15 per creature *bought*).
+- **Nine towns**: Castle, Rampart, Necropolis, Inferno, Tower, Dungeon, Stronghold, Fortress, Conflux, each ~1000x the previous.
+  Towns unlock at Grail point thresholds (1, 10, 40, 150, 600, 2.5K, 10K, 40K).
+- **Upgrades**: upgraded creature forms (x3) and Veteran/Elite/Legendary drills (x2) at 25/50/100 owned.
+- **Town tab**: Kingdom buildings (Tavern, Marketplace, Village Hall, Capitol, ...) plus, per town, Fort → Citadel → Castle,
+  three unique buildings (Necromancy Amplifier, Mystic Pond, Castle Gate, Library, Portal of Summoning, ...) and a Grail structure.
+- **Creature dwellings** (needs the town's Fort): each level grows HoMM3 weekly growth per in-game day for free. Free creatures don't raise prices.
+- **Heroes**: hire one at the Tavern (free on day 1 of a run). Each has a specialty; hero level rises with gold earned (+2% each).
+- **Secondary skills**: Estates, Leadership, Offense, Logistics, Diplomacy, Mysticism, Luck, Scholar, Sorcery, Wisdom, Necromancy.
+- **Mines + Trading Post** (after Marketplace): buy resources for gold, priced from your income.
+- **Wandering artifacts**: Endless Sack of Gold (x7 gold for 77s, rare), Endless Purse of Gold, Angel Wings, Cornucopia.
+  Each has a chance to leave one of 30 **permanent artifacts**, kept through Grail resets.
 - One in-game day = 60s. Each week a random creature gets x2 ("Week of the Griffin").
-- Find the Grail (prestige) from 1 billion lifetime gold: permanent +2% per Grail point; Grails unlock Rampart, Necropolis and Inferno.
-- Progress autosaves to localStorage every 30s; export/import in Options. Offline earnings up to 8h (50%, 100% with Treasury).
+- **Find the Grail** (prestige) from 1 billion lifetime gold: +2% production per Grail point, forever.
+- Autosaves to localStorage every 30s; export/import in Options. Offline earnings up to 8h (50%, 100% with Village Hall).
 
 ## Deploy to Netlify
 It's a static site. Drag the repo folder onto https://app.netlify.com/drop, or connect the repo with
