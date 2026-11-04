@@ -49,6 +49,9 @@
   const TB = [];
   D.TOWNS.forEach(t => {
     const r = 1 + t.idx;
+    D.BUILDINGS.forEach(b => TB.push({ id: `${t.id}_${b.id}`, town: t, g: b.g, name: b.name, desc: b.desc, eff: b.eff, img: D.bImg(t, b),
+      req: b.req ? `${t.id}_${b.req}` : null,
+      cost: Object.fromEntries(Object.entries(b.cost).map(([k, v]) => [k, k === 'gold' ? v * t.costMul : Math.ceil(v * r)])) }));
     D.FORTS.forEach((f, i) => TB.push({ id: `${t.id}_${f.id}`, town: t, name: f.n, desc: f.d, eff: f.eff, img: D.fortImg(t, f),
       req: i ? `${t.id}_${D.FORTS[i - 1].id}` : null,
       cost: { gold: f.gold * t.costMul, wood: 20 * f.res * r, ore: 20 * f.res * r, ...(i ? { [D.RARE[(t.idx + i) % 4]]: 10 * f.res * r } : {}) } }));
@@ -70,7 +73,7 @@
     trades: keep.trades || 0, time: 0, week: null, buffs: [], nextChest: 45, started: keep.started || Date.now(), lastSave: Date.now(),
   });
   let S = fresh();
-  let speed = 1, buyN = 1, tab = 'upgrades', townTab = 'castle', townSub = 'kingdom', dirty = true;
+  let speed = 1, buyN = 1, tab = 'upgrades', townTab = 'castle', townSub = 'castle', dirty = true;
 
   // ---------- effects ----------
   // E aggregates every bonus source (buildings, hero, relics). Rebuilt by recalc() after any purchase.
@@ -89,7 +92,6 @@
         else if (MULT.includes(k)) E[k] *= v; else if (ADD.includes(k)) E[k] += v;
       }
     };
-    D.BUILDINGS.forEach(b => S.buildings[b.id] && apply(b.eff));
     TB.forEach(b => S.buildings[b.id] && apply(b.eff, b.town.id));
     const h = HERO[S.hero]; if (h) apply(h.eff);
     Object.keys(S.relics).forEach(id => RELIC[id] && apply(RELIC[id].eff));
@@ -217,7 +219,6 @@
     if (S.gold < c) return; S.gold -= c; addUnits(key, n); S.bought[key] = (S.bought[key] || 0) + n; changed(); SFX.play('recruit');
   }
   function buyUpg(id) { const u = UPG[id]; if (S.upg[id] || (S.owned[u.unit] || 0) < u.need || !pay(upgCost(u))) return; S.upg[id] = 1; changed(); SFX.play('build'); }
-  function buyBuilding(b) { if (S.buildings[b.id] || !pay(b.cost)) return; S.buildings[b.id] = 1; changed(); SFX.play('build'); toast(`<b>${b.name}</b> built!`); }
   function buyTB(b) { if (S.buildings[b.id] || (b.req && !S.buildings[b.req]) || !pay(b.cost)) return; S.buildings[b.id] = 1; changed(); SFX.play(b.grail ? 'grail' : 'build'); toast(`<b>${b.name}</b> built in ${b.town.name}!`); }
   function buyDw(key) { if (!S.buildings[UNIT[key].town.id + '_fort'] || !pay(dwCost(key))) return; S.dw[key] = (S.dw[key] || 0) + 1; changed(); SFX.play('build'); }
   function buyMine(m) { if (!pay(mineCost(m))) return; S.mines[m.id] = (S.mines[m.id] || 0) + 1; changed(); SFX.play('flag'); }
@@ -284,6 +285,7 @@
       day: Math.floor(S.time / DAY_LEN) + 1, skillLevels: Object.values(S.skills).reduce((a, b) => a + b, 0),
       maxSkill: Math.max(0, ...Object.values(S.skills)), relicCount: Object.keys(S.relics).length, heroLevel: heroLevel(),
       dwellings: Object.values(S.dw).reduce((a, b) => a + b, 0), forts: TB.filter(b => b.id.endsWith('_castle') && S.buildings[b.id]).length,
+      capitols: TB.filter(b => b.id.endsWith('_capitol') && S.buildings[b.id]).length,
       grailBuildings: TB.filter(b => b.grail && S.buildings[b.id]).length };
     for (const a of D.ACH) if (!S.ach[a.id] && a.test(st)) { S.ach[a.id] = Date.now(); SFX.play('achieve'); toast(`<b>Achievement: ${a.name}</b><br><i>${a.flavor}</i>`); if (tab === 'achievements') dirty = true; }
   }
@@ -297,6 +299,7 @@
     if (!o.towns) { // v1 saves unlocked towns by number of Grails found
       o.towns = { castle: 1 }; ['rampart', 'necropolis', 'inferno'].forEach((id, i) => { if ((o.ascensions || 0) > i) o.towns[id] = 1; });
     }
+    if (o.buildings) D.BUILDINGS.forEach(b => { if (o.buildings[b.id]) { o.buildings['castle_' + b.id] = 1; delete o.buildings[b.id]; } });
     if (!o.bought) o.bought = { ...(o.owned || {}) };
     S = { ...base, ...o, res: { ...base.res, ...(o.res || {}) }, v: 2 };
     if (!HERO[S.hero]) S.hero = 'lord_haart';
@@ -348,7 +351,7 @@
   let selUpg = null;
   const ACT = {
     upg: id => { if (selUpg !== id && matchMedia('(hover: none)').matches) { selUpg = id; showUpg(id); return; } buyUpg(id); },
-    bld: id => buyBuilding(D.BUILDINGS.find(b => b.id === id)), tb: id => buyTB(TBI[id]), dw: id => buyDw(id),
+    tb: id => buyTB(TBI[id]), dw: id => buyDw(id),
     mine: id => buyMine(D.MINES.find(m => m.id === id)), skill: id => buySkill(D.SKILLS.find(s => s.id === id)), hire,
     trade: id => { const [r, n] = id.split(':'); trade(r, +n); }, sub: id => { townSub = id; dirty = true; }, ascend: () => ascend(),
   };
@@ -402,15 +405,13 @@
         (done.length ? `<h3>Purchased (${done.length})</h3><div class="grid small">${done.map(u => `<div class="ucard done" title="${u.name}"><img src="${IMG(u.img)}" alt="${u.name}"></div>`).join('')}</div>` : ''))) selUpg = null;
     } else if (tab === 'town') {
       const towns = D.TOWNS.filter(unlocked);
-      if (townSub !== 'kingdom' && !(TOWN[townSub] && unlocked(TOWN[townSub]))) townSub = 'kingdom';
-      let html = `<div class="tabs sub">${[['kingdom', 'Kingdom'], ...towns.map(t => [t.id, t.name])].map(([id, l]) => `<button data-act="sub" data-id="${id}" class="${townSub === id ? 'on' : ''}">${l}</button>`).join('')}</div>`;
-      if (townSub === 'kingdom') {
-        html += `<h2>Kingdom Buildings</h2>` + D.BUILDINGS.map(b => row(`data-act="bld" data-id="${b.id}"`, IMG(b.img), b.name,
-          `${b.desc}<br>${S.buildings[b.id] ? '<span class="week">Built</span>' : costHtml(b.cost)}`, S.buildings[b.id] ? '✔' : '')).join('');
-      } else {
+      if (!(TOWN[townSub] && unlocked(TOWN[townSub]))) townSub = 'castle';
+      let html = `<div class="tabs sub">${towns.map(t => [t.id, t.name]).map(([id, l]) => `<button data-act="sub" data-id="${id}" class="${townSub === id ? 'on' : ''}">${l}</button>`).join('')}</div>`;
+      {
         const t = TOWN[townSub];
-        html += `<h2>${t.name}</h2><h3>Fortifications</h3>` + TB.filter(b => b.town === t && !b.grail && b.id.match(/_(fort|citadel|castle)$/)).map(tbRow).join('') +
-          `<h3>Special Buildings</h3>` + TB.filter(b => b.town === t && b.id.includes('_s')).map(tbRow).join('') +
+        html += `<h2>${t.name}</h2><h3>Halls</h3>` + TB.filter(b => b.town === t && b.g === 'hall').map(tbRow).join('') +
+          `<h3>Economy</h3>` + TB.filter(b => b.town === t && b.g === 'econ').map(tbRow).join('') + `<h3>Fortifications</h3>` + TB.filter(b => b.town === t && !b.grail && b.id.match(/_(fort|citadel|castle)$/)).map(tbRow).join('') +
+          `<h3>Special Buildings</h3>` + TB.filter(b => b.town === t && /_s\d$/.test(b.id)).map(tbRow).join('') +
           `<h3>Creature Dwellings</h3><p class="fine">Each level adds HoMM3 weekly growth per in-game day (60s), free of charge. Requires a Fort. Free creatures don't raise recruiting prices.</p>` +
           UNITS.filter(u => u.town === t && u.tier > 0).map(u => { const l = S.dw[u.key] || 0;
             return row(`data-act="dw" data-id="${u.key}"`, IMG(D.dwImg(t, u.tier)), t.dw[u.tier - 1],
@@ -425,12 +426,12 @@
       html += `<h2>Trading Post</h2>` + (E.tradeOn ? `<p class="fine">Buy resources for gold. Prices follow your income.</p>` +
         D.RES.map(r => `<div class="trade"><img src="${IMG(D.RES_INFO[r].img)}" alt=""> <b>${D.RES_INFO[r].name}</b> ` +
           [10, 100, 1000].map(n => `<button data-act="trade" data-id="${r}:${n}">+${n} <span class="tp" data-tr="${r}" data-n="${n}"></span></button>`).join('') + '</div>').join('')
-        : `<p class="fine">Build a Marketplace (Town → Kingdom) to trade gold for resources.</p>`);
+        : `<p class="fine">Build a Marketplace in any town (Town tab) to trade gold for resources.</p>`);
       put(body, html);
     } else if (tab === 'hero') {
       const h = HERO[S.hero];
       put(body, `<h2>${h.name}</h2><div class="herobox"><img src="${IMG(h.img)}" alt=""><div>Level <b>${heroLevel()}</b> (+${(heroLevel() - 1) * 2}% gold; levels come from gold earned this run)<br>Specialty: <b>${h.spec}</b> — ${h.d}</div></div>
-        <h2>Tavern</h2><p class="fine">Hire a different hero. Free during the first in-game day of a run, otherwise <span class="hc"></span> gold. Heroes from a town appear once it is unlocked.</p>
+        <h2>Tavern</h2><p class="fine">You lead with one hero at a time; hiring another replaces their specialty. Secondary skills belong to your kingdom and are kept, and hero level comes from gold earned this run, so it carries over too. Hire a different hero. Free during the first in-game day of a run, otherwise <span class="hc"></span> gold. Heroes from a town appear once it is unlocked.</p>
         <div class="grid heroes">${D.HEROES.filter(x => unlocked(TOWN[x.town])).map(x => `<button class="ucard hero ${x.id === S.hero ? 'on' : ''}" data-act="hire" data-id="${x.id}" title="${x.name}: ${x.d}"><img src="${IMG(x.img)}" alt="${x.name}"><span>${x.name}</span></button>`).join('')}</div>
         <h2>Secondary Skills</h2>` + D.SKILLS.filter(sk => !sk.town || unlocked(TOWN[sk.town])).map(sk => { const l = skill(sk.id);
         return row(`data-act="skill" data-id="${sk.id}"`, IMG(sk.imgs[Math.max(0, l - 1)]), `${l ? LV[l - 1] + ' ' : ''}${sk.id}`,
@@ -499,8 +500,7 @@
     document.querySelectorAll('.cost span[data-r]').forEach(el => el.classList.toggle('no', have(el.dataset.r) < +el.dataset.v - 1e-9));
     $('tabBody').querySelectorAll('[data-act]').forEach(el => {
       const id = el.dataset.id, a = el.dataset.act;
-      const c = a === 'upg' ? upgCost(UPG[id]) : a === 'bld' ? (S.buildings[id] ? null : D.BUILDINGS.find(b => b.id === id).cost)
-        : a === 'tb' ? (S.buildings[id] ? null : TBI[id].cost) : a === 'dw' ? dwCost(id) : a === 'mine' ? mineCost(D.MINES.find(m => m.id === id))
+      const c = a === 'upg' ? upgCost(UPG[id]) : a === 'tb' ? (S.buildings[id] ? null : TBI[id].cost) : a === 'dw' ? dwCost(id) : a === 'mine' ? mineCost(D.MINES.find(m => m.id === id))
         : a === 'skill' ? (skill(id) >= 3 ? null : skillCost(D.SKILLS.find(s => s.id === id))) : null;
       const locked = (a === 'tb' && TBI[id].req && !S.buildings[TBI[id].req]) || (a === 'dw' && !S.buildings[UNIT[id].town.id + '_fort']);
       if (c || locked) el.classList.toggle('cant', locked || !canAfford(c));

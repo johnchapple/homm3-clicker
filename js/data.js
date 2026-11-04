@@ -102,17 +102,18 @@
     { id: 'crystal', name: 'Crystal Cavern', cost: 25000, rate: 0.015, img: 'Crystal_(leather).gif' },
     { id: 'gems', name: 'Gem Pond', cost: 25000, rate: 0.015, img: 'Gem_(leather).gif' },
   ];
-  // Kingdom-wide buildings
+  // Buildings every town can build (costs scale with the town). `g`: group, `req`: previous building in the chain.
+  // tgps = multiplier on THIS town's creatures; other effects are kingdom-wide and stack across towns.
   const BUILDINGS = [
-    { id: 'tavern', name: 'Tavern', cost: { gold: 500 }, eff: { click: 2 }, img: 'Castle_Tavern_large.gif', desc: 'Rumours of treasure. Clicks are twice as strong.' },
-    { id: 'blacksmith', name: 'Blacksmith', cost: { gold: 5000, wood: 15 }, eff: { click: 2 }, img: 'Castle_Blacksmith_large.gif', desc: 'Sharper picks. Clicks x2.' },
-    { id: 'marketplace', name: 'Marketplace', cost: { gold: 15000, wood: 15, ore: 15 }, eff: { gps: 1.1, tradeOn: 1 }, img: 'Castle_Marketplace_large.gif', desc: '+10% gold production. Opens the Trading Post (Mines tab).' },
-    { id: 'silo', name: 'Resource Silo', cost: { gold: 40000, wood: 15, ore: 30 }, eff: { mines: 2 }, img: 'Castle_Resource_Silo_large.gif', desc: 'Mines produce twice as much.' },
-    { id: 'villagehall', name: 'Village Hall', cost: { gold: 60000, wood: 20 }, eff: { gps: 1.1, offline: 1 }, img: 'Castle_Village_Hall_large.gif', desc: '+10% gold and full offline earnings (instead of 50%).' },
-    { id: 'townhall', name: 'Town Hall', cost: { gold: 1e5, wood: 45, ore: 45 }, eff: { gps: 1.25 }, img: 'Castle_Town_Hall_large.gif', desc: '+25% gold production.' },
-    { id: 'cityhall', name: 'City Hall', cost: { gold: 1e7, wood: 90, ore: 90, crystal: 15, gems: 15 }, eff: { gps: 1.5 }, img: 'Castle_City_Hall_large.gif', desc: '+50% gold production.' },
-    { id: 'mageguild', name: 'Mage Guild', cost: { gold: 5e7, wood: 60, ore: 60, mercury: 30, sulfur: 30, crystal: 30, gems: 30 }, eff: { buff: 1.5 }, img: 'Castle_Mage_Guild_level_1_large.gif', desc: 'Artifact buffs last 50% longer.' },
-    { id: 'capitol', name: 'Capitol', cost: { gold: 1e9, wood: 150, ore: 150, mercury: 60, sulfur: 60, crystal: 60, gems: 60 }, eff: { gps: 2 }, img: 'Castle_Capitol_large.gif', desc: 'Gold production x2.' },
+    { id: 'villagehall', g: 'hall', name: 'Village Hall', img: 'Village_Hall', cost: { gold: 6e4, wood: 20 }, eff: { tgps: 1.1, offline: 1 }, desc: "This town's creatures +10%. Any Village Hall gives full offline earnings." },
+    { id: 'townhall', g: 'hall', req: 'villagehall', name: 'Town Hall', img: 'Town_Hall', cost: { gold: 1e6, wood: 45, ore: 45 }, eff: { tgps: 1.25 }, desc: "This town's creatures +25%." },
+    { id: 'cityhall', g: 'hall', req: 'townhall', name: 'City Hall', img: 'City_Hall', cost: { gold: 5e7, wood: 90, ore: 90, crystal: 15, gems: 15 }, eff: { tgps: 1.5 }, desc: "This town's creatures +50%." },
+    { id: 'capitol', g: 'hall', req: 'cityhall', name: 'Capitol', img: 'Capitol', cost: { gold: 2e9, wood: 150, ore: 150, mercury: 60, sulfur: 60, crystal: 60, gems: 60 }, eff: { tgps: 2 }, desc: "This town's creatures x2." },
+    { id: 'tavern', g: 'econ', name: 'Tavern', img: 'Tavern', cost: { gold: 500 }, eff: { click: 2 }, desc: 'Clicks x2 (stacks across towns).' },
+    { id: 'blacksmith', g: 'econ', name: 'Blacksmith', img: 'Blacksmith', cost: { gold: 5000, wood: 15 }, eff: { click: 2 }, desc: 'Clicks x2 (stacks across towns).' },
+    { id: 'marketplace', g: 'econ', name: 'Marketplace', img: 'Marketplace', cost: { gold: 15000, wood: 15, ore: 15 }, eff: { tgps: 1.1, tradeOn: 1 }, desc: "This town's creatures +10%. Opens the Trading Post (Mines tab)." },
+    { id: 'silo', g: 'econ', name: 'Resource Silo', img: 'Resource_Silo', cost: { gold: 40000, wood: 15, ore: 30 }, eff: { mines: 1.5 }, desc: 'All mines +50% (stacks across towns).' },
+    { id: 'mageguild', g: 'econ', name: 'Mage Guild', img: 'Mage_Guild_level_1', cost: { gold: 5e7, wood: 60, ore: 60, mercury: 30, sulfur: 30, crystal: 30, gems: 30 }, eff: { buff: 1.25 }, desc: 'Artifact buffs last 25% longer (stacks across towns).' },
   ];
   // Hero secondary skills, 3 levels each
   const SKILLS = [
@@ -221,7 +222,7 @@
     ['dwell', 'Population Growth', 'Build a creature dwelling.', 'They will come on their own now.', s => s.dwellings >= 1],
     ['dwell25', 'Thriving Realm', 'Own 25 dwelling levels.', 'Creatures arrive faster than you can count.', s => s.dwellings >= 25],
     ['fortcastle', 'Fortified', 'Build a Castle in any town.', 'Walls, moat and arrow towers.', s => s.forts >= 1],
-    ['capitol', 'Capitol Built', 'Build the Capitol.', '4,000 gold per day, in the old days.', s => s.buildings.capitol],
+    ['capitol', 'Capitol Built', 'Build a Capitol.', '4,000 gold per day, in the old days.', s => s.capitols >= 1],
     ['grailb', 'Monument to Glory', 'Build a Grail structure.', 'Visible from three map sectors away.', s => s.grailBuildings >= 1],
     ['grail1', 'The Grail!', 'Find the Grail.', 'You dig... and find the Grail!', s => s.ascensions >= 1],
     ['grail10', 'Serial Excavator', 'Find the Grail 10 times.', 'The obelisks no longer need reading.', s => s.ascensions >= 10],
@@ -239,6 +240,7 @@
   });
 
   const DATA = { TIERS, GROWTH, TOWNS, FORTS, RES, RARE, RES_INFO, MINES, BUILDINGS, SKILLS, HEROES, ARTIFACTS, RELICS, ACH, UI_IMG };
+  DATA.bImg = (t, b) => `${t.name}_${b.img}_large.gif`;
   DATA.dwImg = (t, i) => `${t.name}_${us(t.dw[i - 1])}.gif`;
   DATA.fortImg = (t, f) => `${t.name}_${f.n}_large.gif`;
   DATA.allImages = () => {
@@ -250,7 +252,7 @@
       FORTS.forEach(f => s.add(DATA.fortImg(t, f)));
     });
     Object.values(RES_INFO).forEach(r => s.add(r.img));
-    MINES.forEach(m => s.add(m.img)); BUILDINGS.forEach(b => s.add(b.img));
+    MINES.forEach(m => s.add(m.img)); TOWNS.forEach(t => BUILDINGS.forEach(b => s.add(DATA.bImg(t, b))));
     SKILLS.forEach(k => k.imgs.forEach(i => s.add(i))); ARTIFACTS.forEach(a => s.add(a.img));
     HEROES.forEach(h => s.add(h.img)); RELICS.forEach(a => s.add(a.img));
     return [...s];
