@@ -15,10 +15,10 @@
   function fmt(n, dec) {
     if (!isFinite(n)) return '∞';
     if (n < 0) return '-' + fmt(-n, dec);
-    if (n < 1000) return n < 10 && dec !== 0 && n % 1 ? n.toFixed(1) : Math.floor(n).toString();
+    if (n < 1000) return n < 1 && n > 0 && dec !== 0 ? n.toFixed(2) : n < 10 && dec !== 0 && n % 1 ? n.toFixed(1) : Math.floor(n).toString();
     const e = Math.min(Math.floor(Math.log10(n) / 3), SUF.length - 1);
     const v = n / Math.pow(1000, e);
-    return (v >= 100 ? v.toFixed(0) : v >= 10 ? v.toFixed(1) : v.toFixed(2)).replace(/\.?0+$/, '') + SUF[e];
+    return (v >= 100 ? v.toFixed(0) : v >= 10 ? v.toFixed(1) : v.toFixed(2)).replace(/(\.\d*?)0+$/, '$1').replace(/\.$/, '') + SUF[e];
   }
   const fmtTime = s => { s = Math.floor(s); const h = Math.floor(s / 3600), m = Math.floor(s / 60) % 60, x = s % 60;
     return (h ? h + 'h ' : '') + (h || m ? m + 'm ' : '') + x + 's'; };
@@ -33,8 +33,8 @@
   const UPGRADES = [];
   UNITS.forEach(u => {
     const resCost = (k) => { const c = {}; const t = u.tier + u.town.unlock * 2;
-      if (t >= 3) { c.wood = 3 * t * k; c.ore = 3 * t * k; }
-      if (t >= 5) { const rare = ['mercury', 'sulfur', 'crystal', 'gems'][u.tier % 4]; c[rare] = 2 * t * k; }
+      if (t >= 3) { c.wood = 8 * t * k; c.ore = 8 * t * k; }
+      if (t >= 5) { const rare = ['mercury', 'sulfur', 'crystal', 'gems'][u.tier % 4]; c[rare] = 6 * t * k; }
       return c; };
     UPGRADES.push({ id: u.key + '_u', unit: u.key, need: 5, mult: 3, name: u.upg === u.name ? `${u.name} Training` : `Upgrade to ${u.upg}`,
       img: u.uimg, desc: `${u.name}s become ${u.upg}s: production x3.`, cost: { gold: u.cost * 15, ...resCost(1) } });
@@ -86,10 +86,10 @@
     return u.cost * diplomacy() * Math.pow(r, o) * (Math.pow(r, n) - 1) / (r - 1);
   }
   function maxBuy(key) { let n = 0; while (n < 1000 && unitCost(key, n + 1) <= S.gold) n++; return n; }
-  const mineCost = m => ({ gold: m.cost * Math.pow(1.6, S.mines[m.id] || 0) });
+  const mineCost = m => ({ gold: m.cost * Math.pow(2, S.mines[m.id] || 0) });
   function skillCost(sk) {
     const l = skill(sk.id); const c = { gold: sk.base * Math.pow(25, l) };
-    if (l >= 1) c[sk.res] = 10 * l * l; if (l >= 2) c.wood = 40; return c;
+    if (l >= 1) c[sk.res] = 30 * l * l; if (l >= 2) c.wood = 120; return c;
   }
   const chestInterval = () => bEff('chest', 1, mul) * Math.pow(0.85, skill('Logistics'));
   const buffDur = () => bEff('buff', 1, mul) * Math.pow(1.15, skill('Luck'));
@@ -102,7 +102,7 @@
   function costHtml(c) {
     return '<span class="cost">' + Object.entries(c).map(([k, v]) => {
       const have = k === 'gold' ? S.gold : S.res[k];
-      return `<img src="${IMG(D.RES_INFO[k].img)}" alt="${D.RES_INFO[k].name}"> <span class="${have >= v ? '' : 'no'}">${fmt(v)}</span>`;
+      return `<img src="${IMG(D.RES_INFO[k].img)}" alt="${D.RES_INFO[k].name}"> <span data-r="${k}" data-v="${v}" class="${have >= v ? '' : 'no'}">${fmt(v)}</span>`;
     }).join(' ') + '</span>';
   }
 
@@ -125,12 +125,12 @@
     const pool = UNITS.filter(u => unlocked(u.town));
     const u = pool[Math.floor(Math.random() * pool.length)];
     S.week = u.key; dirty = true;
-    toast(`<b>Astrologers proclaim Week of the ${u.name}!</b><br>${u.name} production x2 this week.`);
+    SFX.play('week'); toast(`<b>Astrologers proclaim Week of the ${u.name}!</b><br>${u.name} production x2 this week.`);
   }
 
   // ---------- actions ----------
   function doClick(ev) {
-    const v = clickValue(); earn(v); S.clicks++; S.clickGold += v;
+    SFX.play('click'); const v = clickValue(); earn(v); S.clicks++; S.clickGold += v;
     const r = $('clicker').getBoundingClientRect();
     const x = ev && ev.clientX ? ev.clientX : r.left + r.width / 2, y = ev && ev.clientY ? ev.clientY : r.top + r.height / 2;
     const f = document.createElement('div'); f.className = 'float'; f.textContent = '+' + fmt(v);
@@ -139,18 +139,18 @@
   }
   function buyUnit(key) {
     const n = buyN === -1 ? Math.max(1, maxBuy(key)) : buyN; const c = unitCost(key, n);
-    if (S.gold < c) return; S.gold -= c; S.owned[key] = (S.owned[key] || 0) + n; dirty = true;
+    if (S.gold < c) return; S.gold -= c; S.owned[key] = (S.owned[key] || 0) + n; dirty = true; SFX.play('recruit');
   }
-  function buyUpg(id) { const u = UPG[id]; if (S.upg[id] || (S.owned[u.unit] || 0) < u.need || !pay(u.cost)) return; S.upg[id] = 1; dirty = true; hideTip(); }
-  function buyBuilding(b) { if (S.buildings[b.id] || !pay(b.cost)) return; S.buildings[b.id] = 1; dirty = true; toast(`<b>${b.name}</b> built!`); }
-  function buyMine(m) { if (!pay(mineCost(m))) return; S.mines[m.id] = (S.mines[m.id] || 0) + 1; dirty = true; }
-  function buySkill(sk) { if (skill(sk.id) >= 3 || !pay(skillCost(sk))) return; S.skills[sk.id] = skill(sk.id) + 1; dirty = true;
+  function buyUpg(id) { const u = UPG[id]; if (S.upg[id] || (S.owned[u.unit] || 0) < u.need || !pay(u.cost)) return; S.upg[id] = 1; dirty = true; SFX.play('build'); hideTip(); }
+  function buyBuilding(b) { if (S.buildings[b.id] || !pay(b.cost)) return; S.buildings[b.id] = 1; dirty = true; SFX.play('build'); toast(`<b>${b.name}</b> built!`); }
+  function buyMine(m) { if (!pay(mineCost(m))) return; S.mines[m.id] = (S.mines[m.id] || 0) + 1; dirty = true; SFX.play('flag'); }
+  function buySkill(sk) { if (skill(sk.id) >= 3 || !pay(skillCost(sk))) return; S.skills[sk.id] = skill(sk.id) + 1; dirty = true; SFX.play('skill');
     toast(`<b>${['Basic', 'Advanced', 'Expert'][skill(sk.id) - 1]} ${sk.id}</b> learned!`); }
-  function ascend() {
+  function ascend(force) {
     const p = pendingGrail(); if (p < 1) return;
-    if (!confirm(`Dig up the Grail? Your kingdom resets, but you gain ${p} Grail point(s) (+${fmt(p * 2)}% production forever).`)) return;
+    if (!force && !confirm(`Dig up the Grail? Your kingdom resets, but you gain ${p} Grail point(s) (+${fmt(p * 2)}% production forever).`)) return;
     const keep = { lifetime: S.lifetime, clicks: S.clicks, clickGold: S.clickGold, grail: S.grail + p, ascensions: S.ascensions + 1, chests: S.chests, ach: S.ach, started: S.started };
-    S = fresh(keep); removeWander(); dirty = true; save();
+    S = fresh(keep); removeWander(); SFX.play('grail'); dirty = true; save();
     const t = D.TOWNS.find(t => t.unlock === S.ascensions);
     modal(`<h2>You dig... and find the Grail!</h2><p>You now hold <b>${S.grail}</b> Grail points.</p>${t ? `<p>The town of <b>${t.name}</b> now joins your cause!</p>` : ''}`);
   }
@@ -164,8 +164,8 @@
     wanderEl.innerHTML = `<img src="${IMG(art.img)}" alt="${art.name}">`;
     wanderEl.style.left = (10 + Math.random() * (innerWidth - 100)) + 'px';
     wanderEl.style.top = (80 + Math.random() * (innerHeight - 180)) + 'px';
-    wanderEl.onclick = () => { claimArtifact(art); removeWander(); };
-    document.body.appendChild(wanderEl); wanderLeft = 13;
+    wanderEl.onclick = () => { SFX.play('treasure'); claimArtifact(art); removeWander(); };
+    document.body.appendChild(wanderEl); wanderLeft = 13; SFX.play('appear');
   }
   function removeWander() {
     if (wanderEl) wanderEl.remove(); wanderEl = null;
@@ -176,7 +176,7 @@
     if (a.id === 'sack') addBuff('sack', 77, a);
     else if (a.id === 'wings') addBuff('wings', 13, a);
     else if (a.id === 'purse') { const g = Math.min(S.gold * 0.15, gps() * 900) + 13; earn(g); msg = `+${fmt(g)} gold!`; }
-    else if (a.id === 'cornucopia') { msg = D.RES.map(r => { const v = Math.ceil(5 + mineRate(r) * 300); S.res[r] += v; return `+${fmt(v)} ${D.RES_INFO[r].name}`; }).join(', '); }
+    else if (a.id === 'cornucopia') { msg = D.RES.map(r => { const v = Math.ceil(5 + mineRate(r) * 600); S.res[r] += v; return `+${fmt(v)} ${D.RES_INFO[r].name}`; }).join(', '); }
     toast(`<b>${a.name}</b><br>${msg}`); dirty = true;
   }
   function addBuff(id, dur, a) { S.buffs = S.buffs.filter(b => b.id !== id); S.buffs.push({ id, left: dur * buffDur(), max: dur * buffDur(), name: a.name, img: a.img, desc: a.desc }); }
@@ -187,7 +187,7 @@
       totalMines: Object.values(S.mines).reduce((a, b) => a + b, 0), mineKinds: Object.values(S.mines).filter(Boolean).length,
       day: Math.floor(S.time / DAY_LEN) + 1, skillLevels: Object.values(S.skills).reduce((a, b) => a + b, 0),
       maxSkill: Math.max(0, ...Object.values(S.skills)) };
-    for (const a of D.ACH) if (!S.ach[a.id] && a.test(st)) { S.ach[a.id] = Date.now(); toast(`<b>Achievement: ${a.name}</b><br><i>${a.flavor}</i>`); if (tab === 'achievements') dirty = true; }
+    for (const a of D.ACH) if (!S.ach[a.id] && a.test(st)) { S.ach[a.id] = Date.now(); SFX.play('achieve'); toast(`<b>Achievement: ${a.name}</b><br><i>${a.flavor}</i>`); if (tab === 'achievements') dirty = true; }
   }
 
   // ---------- save / load ----------
@@ -295,7 +295,7 @@
     } else if (tab === 'mines') {
       body.innerHTML = `<h2>Mines</h2><p class="fine">Flag mines to gather the rare resources needed for town buildings and elite upgrades.</p>` +
         D.MINES.map(m => row(`data-m="${m.id}"`, IMG(m.img), m.name,
-          `+${fmt(m.rate * bEff('mines', 1, mul))} ${D.RES_INFO[m.id].name}/s each<br>${costHtml(mineCost(m))}`, S.mines[m.id] || 0)).join('');
+          `+${fmt(m.rate * 60 * bEff('mines', 1, mul))} ${D.RES_INFO[m.id].name}/min each<br>${costHtml(mineCost(m))}`, S.mines[m.id] || 0)).join('');
       bind(body, '.row', el => buyMine(D.MINES.find(m => m.id === el.dataset.m)));
     } else if (tab === 'hero') {
       body.innerHTML = `<h2>Secondary Skills</h2>` + D.SKILLS.map(sk => { const l = skill(sk.id);
@@ -316,18 +316,23 @@
       const n = Object.keys(S.ach).length;
       body.innerHTML = `<h2>Feats (${n}/${D.ACH.length})</h2>` + D.ACH.map(a => `<div class="ach ${S.ach[a.id] ? '' : 'no'}"><img src="${UIIMG('icon.png')}" alt="" width="16" height="16"><div><b>${a.name}</b> — ${a.req}${S.ach[a.id] ? `<br><i>${a.flavor}</i>` : ''}</div></div>`).join('');
     } else if (tab === 'options') {
-      body.innerHTML = `<h2>Statistics</h2><div id="stats"></div><h2>Save</h2>
+      body.innerHTML = `<h2>Statistics</h2><div id="stats"></div><h2>Sound</h2><button id="sndBtn">${SFX.muted ? 'Sound: off' : 'Sound: on'}</button>
+        <input type="range" id="vol" min="0" max="1" step="0.05" value="${SFX.vol}" aria-label="Volume" style="width:140px;vertical-align:middle">
+        <p class="fine">Using ${SFX.hasFiles() ? 'sound files from public/sfx/' : 'synthesized sounds'}. See README to use original HoMM3 sounds.</p><h2>Save</h2>
         <button id="saveBtn">Save now</button> <button id="exportBtn">Export</button> <button id="importBtn">Import</button>
         <textarea id="saveText" placeholder="Export string appears here; paste one to import."></textarea>
         <button id="resetBtn">Hard reset</button>
         <h2>Debug</h2><p class="fine">Speed multiplier for testing.</p><div class="buyamt" style="justify-content:flex-start">${[1, 10, 100, 1000].map(n => `<button data-sp="${n}" class="${speed === n ? 'on' : ''}">x${n}</button>`).join('')}
-        <button id="dbgGold">+1h gold</button><button id="dbgArt">Spawn artifact</button></div>`;
+        <button id="dbgGold">+1h gold</button><button id="dbgGrail">Find Grail now</button><button id="dbgArt">Spawn artifact</button></div>`;
+      $('sndBtn').onclick = () => { SFX.setMuted(!SFX.muted); dirty = true; };
+      $('vol').oninput = e => SFX.setVol(+e.target.value);
       $('saveBtn').onclick = () => { save(); toast('Game saved.'); };
       $('exportBtn').onclick = () => { save(); $('saveText').value = enc(S); $('saveText').select(); };
       $('importBtn').onclick = () => { try { load($('saveText').value); dirty = true; save(); toast('Save imported.'); } catch (e) { toast('<b>Import failed</b><br>That save string is not valid.'); } };
       $('resetBtn').onclick = () => { if (confirm('Erase ALL progress including Grail points?')) { S = fresh(); removeWander(); save(); dirty = true; } };
       body.querySelectorAll('[data-sp]').forEach(b => b.onclick = () => { speed = +b.dataset.sp; dirty = true; });
       $('dbgGold').onclick = () => earn(Math.max(1000, gps(false) * 3600));
+      $('dbgGrail').onclick = () => { S.lifetime = Math.max(S.lifetime, Math.pow(S.grail + 1, 3) * 1e9); ascend(true); };
       $('dbgArt').onclick = () => { if (wanderEl) removeWander(); spawnWander(); };
     }
   }
@@ -338,7 +343,7 @@
     $('goldNow').textContent = fmt(S.gold) + ' gold';
     $('gpsNow').textContent = `per second: ${fmt(g)}` + (speed > 1 ? ` (x${speed} debug)` : '');
     $('clickInfo').textContent = `+${fmt(clickValue())} per click`;
-    $('resbar').innerHTML = ['gold', ...D.RES].map(r => `<span class="res" title="${D.RES_INFO[r].name}"><img src="${IMG(D.RES_INFO[r].img)}" alt="${D.RES_INFO[r].name}">${fmt(r === 'gold' ? S.gold : S.res[r], 0)}${r !== 'gold' && mineRate(r) ? ` <small>+${fmt(mineRate(r))}/s</small>` : ''}</span>`).join('');
+    $('resbar').innerHTML = ['gold', ...D.RES].map(r => `<span class="res" title="${D.RES_INFO[r].name}"><img src="${IMG(D.RES_INFO[r].img)}" alt="${D.RES_INFO[r].name}">${fmt(r === 'gold' ? S.gold : S.res[r], 0)}${r !== 'gold' && mineRate(r) ? ` <small>+${fmt(mineRate(r) * 60)}/min</small>` : ''}</span>`).join('');
     const day = Math.floor(S.time / DAY_LEN);
     const wk = S.week && UNIT[S.week] ? `<br><span class="wk">Week of the ${UNIT[S.week].name}</span>` : '';
     $('calendar').innerHTML = `Month ${Math.floor(day / 28) + 1}, Week ${Math.floor(day / 7) % 4 + 1}, Day ${day % 7 + 1}${wk}`;
@@ -349,6 +354,8 @@
       el.classList.toggle('cant', S.gold < c);
       el.querySelector('.c').innerHTML = `${n > 1 ? n + ' for ' : ''}${costHtml({ gold: c })}`;
     });
+    document.querySelectorAll('.cost span[data-r]').forEach(el => { const k = el.dataset.r;
+      el.classList.toggle('no', (k === 'gold' ? S.gold : S.res[k]) < +el.dataset.v - 1e-9); });
     $('tabBody').querySelectorAll('.ucard[data-u]').forEach(el => el.classList.toggle('cant', !canAfford(UPG[el.dataset.u].cost)));
     if (tab === 'options' && $('stats')) {
       $('stats').innerHTML = [['Gold this run', fmt(S.runEarned)], ['Lifetime gold', fmt(S.lifetime)], ['Clicks', fmt(S.clicks)], ['Gold from clicks', fmt(S.clickGold)],

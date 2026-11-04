@@ -10,7 +10,7 @@ Plain HTML/CSS/JS, no build step. Either open `index.html` directly, or serve th
 python3 -m http.server 8000
 ```
 
-Then visit http://localhost:8000. Add `?debug` to the URL to open the Options tab (debug speed x10/x100/x1000, free gold, spawn artifact).
+Then visit http://localhost:8000. Add `?debug` to the URL to open the Options tab (debug speed x10/x100/x1000, free gold, spawn artifact, find Grail now).
 
 ## Single-file build
 `node scripts/build-single.mjs` writes `dist/heroes3-clicker.html` with all CSS, JS and images inlined as data URIs.
@@ -21,6 +21,27 @@ Then visit http://localhost:8000. Add `?debug` to the URL to open the Options ta
   It collects every `img` file name in `js/data.js`, resolves them through the wiki's MediaWiki API, downloads them politely
   (delay between requests, fan-project User-Agent) and records the source URLs in `public/img/manifest.json`.
   To add art: reference the wiki file name in `js/data.js` (or pass names as arguments) and re-run the script.
+
+## Sound effects
+The wiki has no audio, so by default the game plays synthesized chimes (toggle/volume in Options).
+To use the original sounds, extract them from **your own** HoMM3 install (`Data/Heroes3.snd`, e.g. with MMArchive or
+Heroes 3 Resource Editor) and copy them into `public/sfx/` with these names (`.wav`, `.mp3` or `.ogg`):
+
+| file | event | suggested original |
+|---|---|---|
+| `click` | clicking the chest | `PICKUP01.wav` |
+| `appear` | wandering artifact appears | `MYSTERY.wav` |
+| `treasure` | artifact collected | `TREASURE.wav` |
+| `recruit` | creature recruited | `BUY.wav` |
+| `build` | building / upgrade bought | `BUILDTWN.wav` |
+| `flag` | mine captured | `FLAGMINE.wav` |
+| `skill` | skill learned | `NWHEROLV.wav` |
+| `week` | new week | `NEWWEEK.wav` |
+| `achieve` | achievement | `ACHIEVE.wav` / `QUEST.wav` |
+| `grail` | Grail found | `ULTIMATEARTIFACT.wav` |
+
+Missing files fall back to the synthesized sound. `build-single.mjs` inlines whatever is in `public/sfx/`.
+Original game audio is copyrighted, so it isn't committed here.
 
 ## Gameplay
 - Click the treasure chest for gold. Recruit creatures from dwellings (cost x1.15 per purchase).

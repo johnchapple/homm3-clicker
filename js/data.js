@@ -29,27 +29,27 @@
     crystal: { name: 'Crystal', img: 'Resource_Crystal_20x18.gif' }, gems: { name: 'Gems', img: 'Resource_Gem_20x18.gif' },
   };
   const MINES = [
-    { id: 'wood', name: 'Sawmill', cost: 2000, rate: 0.2, img: 'Wood_(leather).gif' },
-    { id: 'ore', name: 'Ore Pit', cost: 2000, rate: 0.2, img: 'Ore_(leather).gif' },
-    { id: 'mercury', name: "Alchemist's Lab", cost: 25000, rate: 0.1, img: 'Mercury_(leather).gif' },
-    { id: 'sulfur', name: 'Sulfur Dune', cost: 25000, rate: 0.1, img: 'Sulfur_(leather).gif' },
-    { id: 'crystal', name: 'Crystal Cavern', cost: 25000, rate: 0.1, img: 'Crystal_(leather).gif' },
-    { id: 'gems', name: 'Gem Pond', cost: 25000, rate: 0.1, img: 'Gem_(leather).gif' },
+    { id: 'wood', name: 'Sawmill', cost: 2000, rate: 0.03, img: 'Wood_(leather).gif' },
+    { id: 'ore', name: 'Ore Pit', cost: 2000, rate: 0.03, img: 'Ore_(leather).gif' },
+    { id: 'mercury', name: "Alchemist's Lab", cost: 25000, rate: 0.015, img: 'Mercury_(leather).gif' },
+    { id: 'sulfur', name: 'Sulfur Dune', cost: 25000, rate: 0.015, img: 'Sulfur_(leather).gif' },
+    { id: 'crystal', name: 'Crystal Cavern', cost: 25000, rate: 0.015, img: 'Crystal_(leather).gif' },
+    { id: 'gems', name: 'Gem Pond', cost: 25000, rate: 0.015, img: 'Gem_(leather).gif' },
   ];
   // Town buildings: global effects. eff: {gps: mult, click: mult, mines: mult, offline: frac, chest: mult}
   const BUILDINGS = [
     { id: 'tavern', name: 'Tavern', cost: { gold: 500 }, eff: { click: 2 }, img: 'Castle_Tavern_large.gif', desc: 'Rumours of treasure. Clicks are twice as strong.' },
-    { id: 'blacksmith', name: 'Blacksmith', cost: { gold: 5000, wood: 5 }, eff: { click: 2 }, img: 'Castle_Blacksmith_large.gif', desc: 'Sharper picks. Clicks x2.' },
-    { id: 'marketplace', name: 'Marketplace', cost: { gold: 15000, wood: 5, ore: 5 }, eff: { gps: 1.1 }, img: 'Castle_Marketplace_large.gif', desc: '+10% gold production.' },
-    { id: 'silo', name: 'Resource Silo', cost: { gold: 40000, wood: 5, ore: 10 }, eff: { mines: 2 }, img: 'Castle_Resource_Silo_large.gif', desc: 'Mines produce twice as much.' },
-    { id: 'townhall', name: 'Town Hall', cost: { gold: 1e5, wood: 15, ore: 15 }, eff: { gps: 1.25 }, img: 'Castle_Town_Hall_large.gif', desc: '+25% gold production.' },
-    { id: 'fort', name: 'Fort', cost: { gold: 5e5, wood: 20, ore: 20 }, eff: { chest: 0.8 }, img: 'Castle_Fort_large.gif', desc: 'Wandering artifacts appear 20% more often.' },
-    { id: 'treasury', name: 'Treasury', cost: { gold: 2e6, ore: 20, crystal: 5 }, eff: { gps: 1.1, offline: 1 }, img: 'Rampart_Treasury.gif', desc: '+10% gold and full offline earnings (instead of 50%).' },
-    { id: 'cityhall', name: 'City Hall', cost: { gold: 1e7, wood: 30, ore: 30, crystal: 5, gems: 5 }, eff: { gps: 1.5 }, img: 'Castle_City_Hall_large.gif', desc: '+50% gold production.' },
-    { id: 'mageguild', name: 'Mage Guild', cost: { gold: 5e7, wood: 20, ore: 20, mercury: 10, sulfur: 10, crystal: 10, gems: 10 }, eff: { buff: 1.5 }, img: 'Castle_Mage_Guild_level_1_large.gif', desc: 'Artifact buffs last 50% longer.' },
-    { id: 'citadel', name: 'Citadel', cost: { gold: 2e8, ore: 50, mercury: 15 }, eff: { chest: 0.8 }, img: 'Castle_Citadel_large.gif', desc: 'Wandering artifacts appear 20% more often.' },
-    { id: 'capitol', name: 'Capitol', cost: { gold: 1e9, wood: 50, ore: 50, mercury: 20, sulfur: 20, crystal: 20, gems: 20 }, eff: { gps: 2 }, img: 'Castle_Capitol_large.gif', desc: 'Gold production x2.' },
-    { id: 'castlewalls', name: 'Castle', cost: { gold: 1e10, wood: 100, ore: 100, crystal: 40, gems: 40 }, eff: { gps: 1.5, chest: 0.8 }, img: 'Castle_Castle_large.gif', desc: '+50% gold and more frequent artifacts.' },
+    { id: 'blacksmith', name: 'Blacksmith', cost: { gold: 5000, wood: 15 }, eff: { click: 2 }, img: 'Castle_Blacksmith_large.gif', desc: 'Sharper picks. Clicks x2.' },
+    { id: 'marketplace', name: 'Marketplace', cost: { gold: 15000, wood: 15, ore: 15 }, eff: { gps: 1.1 }, img: 'Castle_Marketplace_large.gif', desc: '+10% gold production.' },
+    { id: 'silo', name: 'Resource Silo', cost: { gold: 40000, wood: 15, ore: 30 }, eff: { mines: 2 }, img: 'Castle_Resource_Silo_large.gif', desc: 'Mines produce twice as much.' },
+    { id: 'townhall', name: 'Town Hall', cost: { gold: 1e5, wood: 45, ore: 45 }, eff: { gps: 1.25 }, img: 'Castle_Town_Hall_large.gif', desc: '+25% gold production.' },
+    { id: 'fort', name: 'Fort', cost: { gold: 5e5, wood: 60, ore: 60 }, eff: { chest: 0.8 }, img: 'Castle_Fort_large.gif', desc: 'Wandering artifacts appear 20% more often.' },
+    { id: 'treasury', name: 'Treasury', cost: { gold: 2e6, ore: 60, crystal: 15 }, eff: { gps: 1.1, offline: 1 }, img: 'Rampart_Treasury.gif', desc: '+10% gold and full offline earnings (instead of 50%).' },
+    { id: 'cityhall', name: 'City Hall', cost: { gold: 1e7, wood: 90, ore: 90, crystal: 15, gems: 15 }, eff: { gps: 1.5 }, img: 'Castle_City_Hall_large.gif', desc: '+50% gold production.' },
+    { id: 'mageguild', name: 'Mage Guild', cost: { gold: 5e7, wood: 60, ore: 60, mercury: 30, sulfur: 30, crystal: 30, gems: 30 }, eff: { buff: 1.5 }, img: 'Castle_Mage_Guild_level_1_large.gif', desc: 'Artifact buffs last 50% longer.' },
+    { id: 'citadel', name: 'Citadel', cost: { gold: 2e8, ore: 150, mercury: 45 }, eff: { chest: 0.8 }, img: 'Castle_Citadel_large.gif', desc: 'Wandering artifacts appear 20% more often.' },
+    { id: 'capitol', name: 'Capitol', cost: { gold: 1e9, wood: 150, ore: 150, mercury: 60, sulfur: 60, crystal: 60, gems: 60 }, eff: { gps: 2 }, img: 'Castle_Capitol_large.gif', desc: 'Gold production x2.' },
+    { id: 'castlewalls', name: 'Castle', cost: { gold: 1e10, wood: 300, ore: 300, crystal: 120, gems: 120 }, eff: { gps: 1.5, chest: 0.8 }, img: 'Castle_Castle_large.gif', desc: '+50% gold and more frequent artifacts.' },
   ];
   // Hero secondary skills, 3 levels each
   const SKILLS = [
@@ -61,8 +61,8 @@
     { id: 'Wisdom', desc: ['+1% gold per Grail point bonus.', '+1% more.', '+1% more.'], base: 1e6, res: 'crystal' },
   ].map(s => ({ ...s, imgs: ['Basic', 'Advanced', 'Expert'].map(l => `${l}_${s.id}.png`) }));
   const ARTIFACTS = [
-    { id: 'sack', name: 'Endless Sack of Gold', img: 'Artifact_Endless_Sack_of_Gold.gif', w: 5, desc: 'Gold production x7 for 77 seconds!' },
-    { id: 'purse', name: 'Endless Purse of Gold', img: 'Artifact_Endless_Purse_of_Gold.gif', w: 5, desc: 'A lucky haul of gold!' },
+    { id: 'sack', name: 'Endless Sack of Gold', img: 'Artifact_Endless_Sack_of_Gold.gif', w: 1, desc: 'Gold production x7 for 77 seconds!' },
+    { id: 'purse', name: 'Endless Purse of Gold', img: 'Artifact_Endless_Purse_of_Gold.gif', w: 6, desc: 'A lucky haul of gold!' },
     { id: 'wings', name: 'Angel Wings', img: 'Artifact_Angel_Wings.gif', w: 2, desc: 'Clicks x77 for 13 seconds!' },
     { id: 'cornucopia', name: 'Cornucopia', img: 'Artifact_Cornucopia.gif', w: 2, desc: 'A shower of rare resources!' },
   ];
