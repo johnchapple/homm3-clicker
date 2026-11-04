@@ -1,0 +1,597 @@
+{
+ "Hero_Lord_Haart.png": {
+  "local": "Hero_Lord_Haart.png",
+  "source": "https://heroes.thelazy.net//images/6/6a/Hero_Lord_Haart.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Hero_Lord_Haart.png"
+ },
+ "Gold_(leather).gif": {
+  "local": "Gold__leather_.gif",
+  "source": "https://heroes.thelazy.net//images/9/9f/Gold_%28leather%29.gif",
+  "page": "https://heroes.thelazy.net//index.php/File:Gold_(leather).gif"
+ },
+ "Castle_Castle_large.gif": {
+  "local": "Castle_Castle_large.gif",
+  "source": "https://heroes.thelazy.net//images/5/5e/Castle_Castle_large.gif",
+  "page": "https://heroes.thelazy.net//index.php/File:Castle_Castle_large.gif"
+ },
+ "Rampart_Castle_large.gif": {
+  "local": "Rampart_Castle_large.gif",
+  "source": "https://heroes.thelazy.net//images/a/a6/Rampart_Castle_large.gif",
+  "page": "https://heroes.thelazy.net//index.php/File:Rampart_Castle_large.gif"
+ },
+ "Necropolis_Castle_large.gif": {
+  "local": "Necropolis_Castle_large.gif",
+  "source": "https://heroes.thelazy.net//images/e/ea/Necropolis_Castle_large.gif",
+  "page": "https://heroes.thelazy.net//index.php/File:Necropolis_Castle_large.gif"
+ },
+ "Treasure_Chest.gif": {
+  "local": "Treasure_Chest.gif",
+  "source": "https://heroes.thelazy.net//images/6/67/Treasure_Chest.gif",
+  "page": "https://heroes.thelazy.net//index.php/File:Treasure_Chest.gif"
+ },
+ "Creature_Halberdier.png": {
+  "local": "Creature_Halberdier.png",
+  "source": "https://heroes.thelazy.net//images/e/e5/Creature_Halberdier.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Halberdier.png"
+ },
+ "Creature_Pikeman.png": {
+  "local": "Creature_Pikeman.png",
+  "source": "https://heroes.thelazy.net//images/6/63/Creature_Pikeman.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Pikeman.png"
+ },
+ "Creature_Archer.png": {
+  "local": "Creature_Archer.png",
+  "source": "https://heroes.thelazy.net//images/5/50/Creature_Archer.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Archer.png"
+ },
+ "Creature_Marksman.png": {
+  "local": "Creature_Marksman.png",
+  "source": "https://heroes.thelazy.net//images/6/69/Creature_Marksman.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Marksman.png"
+ },
+ "Creature_Griffin.png": {
+  "local": "Creature_Griffin.png",
+  "source": "https://heroes.thelazy.net//images/4/44/Creature_Griffin.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Griffin.png"
+ },
+ "Creature_Royal_Griffin.png": {
+  "local": "Creature_Royal_Griffin.png",
+  "source": "https://heroes.thelazy.net//images/7/75/Creature_Royal_Griffin.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Royal_Griffin.png"
+ },
+ "Creature_Swordsman.png": {
+  "local": "Creature_Swordsman.png",
+  "source": "https://heroes.thelazy.net//images/c/c5/Creature_Swordsman.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Swordsman.png"
+ },
+ "Creature_Crusader.png": {
+  "local": "Creature_Crusader.png",
+  "source": "https://heroes.thelazy.net//images/6/6f/Creature_Crusader.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Crusader.png"
+ },
+ "Creature_Monk.png": {
+  "local": "Creature_Monk.png",
+  "source": "https://heroes.thelazy.net//images/5/56/Creature_Monk.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Monk.png"
+ },
+ "Creature_Zealot.png": {
+  "local": "Creature_Zealot.png",
+  "source": "https://heroes.thelazy.net//images/c/c5/Creature_Zealot.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Zealot.png"
+ },
+ "Creature_Cavalier.png": {
+  "local": "Creature_Cavalier.png",
+  "source": "https://heroes.thelazy.net//images/1/17/Creature_Cavalier.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Cavalier.png"
+ },
+ "Creature_Champion.png": {
+  "local": "Creature_Champion.png",
+  "source": "https://heroes.thelazy.net//images/9/9f/Creature_Champion.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Champion.png"
+ },
+ "Creature_Angel.png": {
+  "local": "Creature_Angel.png",
+  "source": "https://heroes.thelazy.net//images/9/9a/Creature_Angel.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Angel.png"
+ },
+ "Creature_Archangel.png": {
+  "local": "Creature_Archangel.png",
+  "source": "https://heroes.thelazy.net//images/4/46/Creature_Archangel.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Archangel.png"
+ },
+ "Creature_Centaur.png": {
+  "local": "Creature_Centaur.png",
+  "source": "https://heroes.thelazy.net//images/5/53/Creature_Centaur.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Centaur.png"
+ },
+ "Creature_Centaur_Captain.png": {
+  "local": "Creature_Centaur_Captain.png",
+  "source": "https://heroes.thelazy.net//images/f/f3/Creature_Centaur_Captain.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Centaur_Captain.png"
+ },
+ "Creature_Battle_Dwarf.png": {
+  "local": "Creature_Battle_Dwarf.png",
+  "source": "https://heroes.thelazy.net//images/b/b6/Creature_Battle_Dwarf.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Battle_Dwarf.png"
+ },
+ "Creature_Dwarf.png": {
+  "local": "Creature_Dwarf.png",
+  "source": "https://heroes.thelazy.net//images/6/60/Creature_Dwarf.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Dwarf.png"
+ },
+ "Creature_Grand_Elf.png": {
+  "local": "Creature_Grand_Elf.png",
+  "source": "https://heroes.thelazy.net//images/9/92/Creature_Grand_Elf.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Grand_Elf.png"
+ },
+ "Creature_Wood_Elf.png": {
+  "local": "Creature_Wood_Elf.png",
+  "source": "https://heroes.thelazy.net//images/9/9d/Creature_Wood_Elf.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Wood_Elf.png"
+ },
+ "Creature_Pegasus.png": {
+  "local": "Creature_Pegasus.png",
+  "source": "https://heroes.thelazy.net//images/1/13/Creature_Pegasus.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Pegasus.png"
+ },
+ "Creature_Silver_Pegasus.png": {
+  "local": "Creature_Silver_Pegasus.png",
+  "source": "https://heroes.thelazy.net//images/a/a9/Creature_Silver_Pegasus.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Silver_Pegasus.png"
+ },
+ "Creature_Dendroid_Guard.png": {
+  "local": "Creature_Dendroid_Guard.png",
+  "source": "https://heroes.thelazy.net//images/7/79/Creature_Dendroid_Guard.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Dendroid_Guard.png"
+ },
+ "Creature_Dendroid_Soldier.png": {
+  "local": "Creature_Dendroid_Soldier.png",
+  "source": "https://heroes.thelazy.net//images/4/48/Creature_Dendroid_Soldier.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Dendroid_Soldier.png"
+ },
+ "Creature_Unicorn.png": {
+  "local": "Creature_Unicorn.png",
+  "source": "https://heroes.thelazy.net//images/c/c6/Creature_Unicorn.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Unicorn.png"
+ },
+ "Creature_War_Unicorn.png": {
+  "local": "Creature_War_Unicorn.png",
+  "source": "https://heroes.thelazy.net//images/c/c2/Creature_War_Unicorn.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_War_Unicorn.png"
+ },
+ "Creature_Green_Dragon.png": {
+  "local": "Creature_Green_Dragon.png",
+  "source": "https://heroes.thelazy.net//images/3/39/Creature_Green_Dragon.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Green_Dragon.png"
+ },
+ "Creature_Gold_Dragon.png": {
+  "local": "Creature_Gold_Dragon.png",
+  "source": "https://heroes.thelazy.net//images/d/d5/Creature_Gold_Dragon.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Gold_Dragon.png"
+ },
+ "Creature_Skeleton.png": {
+  "local": "Creature_Skeleton.png",
+  "source": "https://heroes.thelazy.net//images/3/3f/Creature_Skeleton.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Skeleton.png"
+ },
+ "Creature_Skeleton_Warrior.png": {
+  "local": "Creature_Skeleton_Warrior.png",
+  "source": "https://heroes.thelazy.net//images/0/03/Creature_Skeleton_Warrior.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Skeleton_Warrior.png"
+ },
+ "Creature_Peasant.png": {
+  "local": "Creature_Peasant.png",
+  "source": "https://heroes.thelazy.net//images/9/99/Creature_Peasant.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Peasant.png"
+ },
+ "Creature_Halfling.png": {
+  "local": "Creature_Halfling.png",
+  "source": "https://heroes.thelazy.net//images/5/57/Creature_Halfling.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Halfling.png"
+ },
+ "Creature_Rogue.png": {
+  "local": "Creature_Rogue.png",
+  "source": "https://heroes.thelazy.net//images/7/77/Creature_Rogue.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Rogue.png"
+ },
+ "Grail.webp": {
+  "local": "Grail.webp",
+  "source": "https://heroes.thelazy.net//images/d/d0/Grail.webp",
+  "page": "https://heroes.thelazy.net//index.php/File:Grail.webp"
+ },
+ "Crystal_(leather).gif": {
+  "local": "Crystal__leather_.gif",
+  "source": "https://heroes.thelazy.net//images/1/14/Crystal_%28leather%29.gif",
+  "page": "https://heroes.thelazy.net//index.php/File:Crystal_(leather).gif"
+ },
+ "Mercury_(leather).gif": {
+  "local": "Mercury__leather_.gif",
+  "source": "https://heroes.thelazy.net//images/5/56/Mercury_%28leather%29.gif",
+  "page": "https://heroes.thelazy.net//index.php/File:Mercury_(leather).gif"
+ },
+ "Ore_(leather).gif": {
+  "local": "Ore__leather_.gif",
+  "source": "https://heroes.thelazy.net//images/6/6f/Ore_%28leather%29.gif",
+  "page": "https://heroes.thelazy.net//index.php/File:Ore_(leather).gif"
+ },
+ "Sulfur_(leather).gif": {
+  "local": "Sulfur__leather_.gif",
+  "source": "https://heroes.thelazy.net//images/6/67/Sulfur_%28leather%29.gif",
+  "page": "https://heroes.thelazy.net//index.php/File:Sulfur_(leather).gif"
+ },
+ "Wood_(leather).gif": {
+  "local": "Wood__leather_.gif",
+  "source": "https://heroes.thelazy.net//images/a/a5/Wood_%28leather%29.gif",
+  "page": "https://heroes.thelazy.net//index.php/File:Wood_(leather).gif"
+ },
+ "Resource_Mercury_20x18.gif": {
+  "local": "Resource_Mercury_20x18.gif",
+  "source": "https://heroes.thelazy.net//images/a/ae/Resource_Mercury_20x18.gif",
+  "page": "https://heroes.thelazy.net//index.php/File:Resource_Mercury_20x18.gif"
+ },
+ "Resource_Gold_20x18.gif": {
+  "local": "Resource_Gold_20x18.gif",
+  "source": "https://heroes.thelazy.net//images/e/e4/Resource_Gold_20x18.gif",
+  "page": "https://heroes.thelazy.net//index.php/File:Resource_Gold_20x18.gif"
+ },
+ "Resource_Sulfur_20x18.gif": {
+  "local": "Resource_Sulfur_20x18.gif",
+  "source": "https://heroes.thelazy.net//images/1/1b/Resource_Sulfur_20x18.gif",
+  "page": "https://heroes.thelazy.net//index.php/File:Resource_Sulfur_20x18.gif"
+ },
+ "Resource_Crystal_20x18.gif": {
+  "local": "Resource_Crystal_20x18.gif",
+  "source": "https://heroes.thelazy.net//images/9/97/Resource_Crystal_20x18.gif",
+  "page": "https://heroes.thelazy.net//index.php/File:Resource_Crystal_20x18.gif"
+ },
+ "Resource_Gem_20x18.gif": {
+  "local": "Resource_Gem_20x18.gif",
+  "source": "https://heroes.thelazy.net//images/4/42/Resource_Gem_20x18.gif",
+  "page": "https://heroes.thelazy.net//index.php/File:Resource_Gem_20x18.gif"
+ },
+ "Inferno_Castle_large.gif": {
+  "local": "Inferno_Castle_large.gif",
+  "source": "https://heroes.thelazy.net//images/2/23/Inferno_Castle_large.gif",
+  "page": "https://heroes.thelazy.net//index.php/File:Inferno_Castle_large.gif"
+ },
+ "Resource_Wood_20x18.gif": {
+  "local": "Resource_Wood_20x18.gif",
+  "source": "https://heroes.thelazy.net//images/f/f6/Resource_Wood_20x18.gif",
+  "page": "https://heroes.thelazy.net//index.php/File:Resource_Wood_20x18.gif"
+ },
+ "Resource_Ore_20x18.gif": {
+  "local": "Resource_Ore_20x18.gif",
+  "source": "https://heroes.thelazy.net//images/b/b7/Resource_Ore_20x18.gif",
+  "page": "https://heroes.thelazy.net//index.php/File:Resource_Ore_20x18.gif"
+ },
+ "Creature_Imp.png": {
+  "local": "Creature_Imp.png",
+  "source": "https://heroes.thelazy.net//images/1/16/Creature_Imp.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Imp.png"
+ },
+ "Creature_Familiar.png": {
+  "local": "Creature_Familiar.png",
+  "source": "https://heroes.thelazy.net//images/b/b3/Creature_Familiar.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Familiar.png"
+ },
+ "Creature_Gog.png": {
+  "local": "Creature_Gog.png",
+  "source": "https://heroes.thelazy.net//images/a/af/Creature_Gog.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Gog.png"
+ },
+ "Creature_Magog.png": {
+  "local": "Creature_Magog.png",
+  "source": "https://heroes.thelazy.net//images/3/39/Creature_Magog.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Magog.png"
+ },
+ "Creature_Hell_Hound.png": {
+  "local": "Creature_Hell_Hound.png",
+  "source": "https://heroes.thelazy.net//images/0/00/Creature_Hell_Hound.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Hell_Hound.png"
+ },
+ "Creature_Cerberus.png": {
+  "local": "Creature_Cerberus.png",
+  "source": "https://heroes.thelazy.net//images/d/d9/Creature_Cerberus.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Cerberus.png"
+ },
+ "Creature_Demon.png": {
+  "local": "Creature_Demon.png",
+  "source": "https://heroes.thelazy.net//images/d/d7/Creature_Demon.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Demon.png"
+ },
+ "Creature_Horned_Demon.png": {
+  "local": "Creature_Horned_Demon.png",
+  "source": "https://heroes.thelazy.net//images/b/ba/Creature_Horned_Demon.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Horned_Demon.png"
+ },
+ "Creature_Pit_Fiend.png": {
+  "local": "Creature_Pit_Fiend.png",
+  "source": "https://heroes.thelazy.net//images/0/0f/Creature_Pit_Fiend.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Pit_Fiend.png"
+ },
+ "Creature_Pit_Lord.png": {
+  "local": "Creature_Pit_Lord.png",
+  "source": "https://heroes.thelazy.net//images/6/68/Creature_Pit_Lord.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Pit_Lord.png"
+ },
+ "Creature_Efreeti.png": {
+  "local": "Creature_Efreeti.png",
+  "source": "https://heroes.thelazy.net//images/b/b6/Creature_Efreeti.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Efreeti.png"
+ },
+ "Creature_Efreet_Sultan.png": {
+  "local": "Creature_Efreet_Sultan.png",
+  "source": "https://heroes.thelazy.net//images/f/f1/Creature_Efreet_Sultan.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Efreet_Sultan.png"
+ },
+ "Creature_Devil.png": {
+  "local": "Creature_Devil.png",
+  "source": "https://heroes.thelazy.net//images/3/3f/Creature_Devil.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Devil.png"
+ },
+ "Creature_Arch_Devil.png": {
+  "local": "Creature_Arch_Devil.png",
+  "source": "https://heroes.thelazy.net//images/4/47/Creature_Arch_Devil.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Arch_Devil.png"
+ },
+ "Creature_Zombie.png": {
+  "local": "Creature_Zombie.png",
+  "source": "https://heroes.thelazy.net//images/f/f5/Creature_Zombie.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Zombie.png"
+ },
+ "Creature_Walking_Dead.png": {
+  "local": "Creature_Walking_Dead.png",
+  "source": "https://heroes.thelazy.net//images/0/0d/Creature_Walking_Dead.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Walking_Dead.png"
+ },
+ "Creature_Wight.png": {
+  "local": "Creature_Wight.png",
+  "source": "https://heroes.thelazy.net//images/e/e6/Creature_Wight.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Wight.png"
+ },
+ "Creature_Wraith.png": {
+  "local": "Creature_Wraith.png",
+  "source": "https://heroes.thelazy.net//images/1/10/Creature_Wraith.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Wraith.png"
+ },
+ "Creature_Vampire.png": {
+  "local": "Creature_Vampire.png",
+  "source": "https://heroes.thelazy.net//images/9/91/Creature_Vampire.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Vampire.png"
+ },
+ "Creature_Vampire_Lord.png": {
+  "local": "Creature_Vampire_Lord.png",
+  "source": "https://heroes.thelazy.net//images/b/b2/Creature_Vampire_Lord.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Vampire_Lord.png"
+ },
+ "Creature_Lich.png": {
+  "local": "Creature_Lich.png",
+  "source": "https://heroes.thelazy.net//images/a/a4/Creature_Lich.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Lich.png"
+ },
+ "Creature_Power_Lich.png": {
+  "local": "Creature_Power_Lich.png",
+  "source": "https://heroes.thelazy.net//images/9/97/Creature_Power_Lich.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Power_Lich.png"
+ },
+ "Creature_Black_Knight.png": {
+  "local": "Creature_Black_Knight.png",
+  "source": "https://heroes.thelazy.net//images/2/29/Creature_Black_Knight.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Black_Knight.png"
+ },
+ "Creature_Dread_Knight.png": {
+  "local": "Creature_Dread_Knight.png",
+  "source": "https://heroes.thelazy.net//images/5/5f/Creature_Dread_Knight.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Dread_Knight.png"
+ },
+ "Creature_Bone_Dragon.png": {
+  "local": "Creature_Bone_Dragon.png",
+  "source": "https://heroes.thelazy.net//images/0/07/Creature_Bone_Dragon.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Bone_Dragon.png"
+ },
+ "Creature_Ghost_Dragon.png": {
+  "local": "Creature_Ghost_Dragon.png",
+  "source": "https://heroes.thelazy.net//images/9/98/Creature_Ghost_Dragon.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Ghost_Dragon.png"
+ },
+ "Creature_Nomad.png": {
+  "local": "Creature_Nomad.png",
+  "source": "https://heroes.thelazy.net//images/6/6e/Creature_Nomad.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Creature_Nomad.png"
+ },
+ "Artifact_Angel_Wings.gif": {
+  "local": "Artifact_Angel_Wings.gif",
+  "source": "https://heroes.thelazy.net//images/3/3d/Artifact_Angel_Wings.gif",
+  "page": "https://heroes.thelazy.net//index.php/File:Artifact_Angel_Wings.gif"
+ },
+ "Artifact_Cornucopia.gif": {
+  "local": "Artifact_Cornucopia.gif",
+  "source": "https://heroes.thelazy.net//images/6/6a/Artifact_Cornucopia.gif",
+  "page": "https://heroes.thelazy.net//index.php/File:Artifact_Cornucopia.gif"
+ },
+ "Artifact_Endless_Sack_of_Gold.gif": {
+  "local": "Artifact_Endless_Sack_of_Gold.gif",
+  "source": "https://heroes.thelazy.net//images/3/35/Artifact_Endless_Sack_of_Gold.gif",
+  "page": "https://heroes.thelazy.net//index.php/File:Artifact_Endless_Sack_of_Gold.gif"
+ },
+ "Artifact_Endless_Purse_of_Gold.gif": {
+  "local": "Artifact_Endless_Purse_of_Gold.gif",
+  "source": "https://heroes.thelazy.net//images/3/3e/Artifact_Endless_Purse_of_Gold.gif",
+  "page": "https://heroes.thelazy.net//index.php/File:Artifact_Endless_Purse_of_Gold.gif"
+ },
+ "Castle_Town_Hall.gif": {
+  "local": "Castle_Town_Hall.gif",
+  "source": "https://heroes.thelazy.net//images/4/44/Castle_Town_Hall.gif",
+  "page": "https://heroes.thelazy.net//index.php/File:Castle_Town_Hall.gif"
+ },
+ "Castle_City_Hall.gif": {
+  "local": "Castle_City_Hall.gif",
+  "source": "https://heroes.thelazy.net//images/3/3b/Castle_City_Hall.gif",
+  "page": "https://heroes.thelazy.net//index.php/File:Castle_City_Hall.gif"
+ },
+ "Castle_Capitol.gif": {
+  "local": "Castle_Capitol.gif",
+  "source": "https://heroes.thelazy.net//images/8/81/Castle_Capitol.gif",
+  "page": "https://heroes.thelazy.net//index.php/File:Castle_Capitol.gif"
+ },
+ "Castle_Citadel.gif": {
+  "local": "Castle_Citadel.gif",
+  "source": "https://heroes.thelazy.net//images/8/82/Castle_Citadel.gif",
+  "page": "https://heroes.thelazy.net//index.php/File:Castle_Citadel.gif"
+ },
+ "Castle_Mage_Guild_level_1.gif": {
+  "local": "Castle_Mage_Guild_level_1.gif",
+  "source": "https://heroes.thelazy.net//images/7/73/Castle_Mage_Guild_level_1.gif",
+  "page": "https://heroes.thelazy.net//index.php/File:Castle_Mage_Guild_level_1.gif"
+ },
+ "Basic_Diplomacy.png": {
+  "local": "Basic_Diplomacy.png",
+  "source": "https://heroes.thelazy.net//images/3/38/Basic_Diplomacy.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Basic_Diplomacy.png"
+ },
+ "Advanced_Diplomacy.png": {
+  "local": "Advanced_Diplomacy.png",
+  "source": "https://heroes.thelazy.net//images/4/43/Advanced_Diplomacy.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Advanced_Diplomacy.png"
+ },
+ "Expert_Diplomacy.png": {
+  "local": "Expert_Diplomacy.png",
+  "source": "https://heroes.thelazy.net//images/6/60/Expert_Diplomacy.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Expert_Diplomacy.png"
+ },
+ "Basic_Estates.png": {
+  "local": "Basic_Estates.png",
+  "source": "https://heroes.thelazy.net//images/3/3a/Basic_Estates.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Basic_Estates.png"
+ },
+ "Advanced_Estates.png": {
+  "local": "Advanced_Estates.png",
+  "source": "https://heroes.thelazy.net//images/7/72/Advanced_Estates.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Advanced_Estates.png"
+ },
+ "Expert_Estates.png": {
+  "local": "Expert_Estates.png",
+  "source": "https://heroes.thelazy.net//images/b/b9/Expert_Estates.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Expert_Estates.png"
+ },
+ "Basic_Leadership.png": {
+  "local": "Basic_Leadership.png",
+  "source": "https://heroes.thelazy.net//images/9/9d/Basic_Leadership.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Basic_Leadership.png"
+ },
+ "Advanced_Leadership.png": {
+  "local": "Advanced_Leadership.png",
+  "source": "https://heroes.thelazy.net//images/f/f8/Advanced_Leadership.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Advanced_Leadership.png"
+ },
+ "Expert_Leadership.png": {
+  "local": "Expert_Leadership.png",
+  "source": "https://heroes.thelazy.net//images/9/91/Expert_Leadership.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Expert_Leadership.png"
+ },
+ "Basic_Logistics.png": {
+  "local": "Basic_Logistics.png",
+  "source": "https://heroes.thelazy.net//images/7/75/Basic_Logistics.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Basic_Logistics.png"
+ },
+ "Advanced_Logistics.png": {
+  "local": "Advanced_Logistics.png",
+  "source": "https://heroes.thelazy.net//images/b/b9/Advanced_Logistics.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Advanced_Logistics.png"
+ },
+ "Expert_Logistics.png": {
+  "local": "Expert_Logistics.png",
+  "source": "https://heroes.thelazy.net//images/e/e8/Expert_Logistics.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Expert_Logistics.png"
+ },
+ "Basic_Luck.png": {
+  "local": "Basic_Luck.png",
+  "source": "https://heroes.thelazy.net//images/f/fc/Basic_Luck.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Basic_Luck.png"
+ },
+ "Advanced_Luck.png": {
+  "local": "Advanced_Luck.png",
+  "source": "https://heroes.thelazy.net//images/f/fd/Advanced_Luck.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Advanced_Luck.png"
+ },
+ "Expert_Luck.png": {
+  "local": "Expert_Luck.png",
+  "source": "https://heroes.thelazy.net//images/8/81/Expert_Luck.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Expert_Luck.png"
+ },
+ "Basic_Wisdom.png": {
+  "local": "Basic_Wisdom.png",
+  "source": "https://heroes.thelazy.net//images/b/b1/Basic_Wisdom.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Basic_Wisdom.png"
+ },
+ "Advanced_Wisdom.png": {
+  "local": "Advanced_Wisdom.png",
+  "source": "https://heroes.thelazy.net//images/5/52/Advanced_Wisdom.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Advanced_Wisdom.png"
+ },
+ "Expert_Wisdom.png": {
+  "local": "Expert_Wisdom.png",
+  "source": "https://heroes.thelazy.net//images/b/b2/Expert_Wisdom.png",
+  "page": "https://heroes.thelazy.net//index.php/File:Expert_Wisdom.png"
+ },
+ "Gem_(leather).gif": {
+  "local": "Gem__leather_.gif",
+  "source": "https://heroes.thelazy.net//images/c/cb/Gem_%28leather%29.gif",
+  "page": "https://heroes.thelazy.net//index.php/File:Gem_(leather).gif"
+ },
+ "Castle_Fort_large.gif": {
+  "local": "Castle_Fort_large.gif",
+  "source": "https://heroes.thelazy.net//images/1/1c/Castle_Fort_large.gif",
+  "page": "https://heroes.thelazy.net//index.php/File:Castle_Fort_large.gif"
+ },
+ "Castle_Citadel_large.gif": {
+  "local": "Castle_Citadel_large.gif",
+  "source": "https://heroes.thelazy.net//images/1/1c/Castle_Citadel_large.gif",
+  "page": "https://heroes.thelazy.net//index.php/File:Castle_Citadel_large.gif"
+ },
+ "Castle_Mage_Guild_level_1_large.gif": {
+  "local": "Castle_Mage_Guild_level_1_large.gif",
+  "source": "https://heroes.thelazy.net//images/5/5a/Castle_Mage_Guild_level_1_large.gif",
+  "page": "https://heroes.thelazy.net//index.php/File:Castle_Mage_Guild_level_1_large.gif"
+ },
+ "Castle_Town_Hall_large.gif": {
+  "local": "Castle_Town_Hall_large.gif",
+  "source": "https://heroes.thelazy.net//images/e/ec/Castle_Town_Hall_large.gif",
+  "page": "https://heroes.thelazy.net//index.php/File:Castle_Town_Hall_large.gif"
+ },
+ "Castle_City_Hall_large.gif": {
+  "local": "Castle_City_Hall_large.gif",
+  "source": "https://heroes.thelazy.net//images/a/ad/Castle_City_Hall_large.gif",
+  "page": "https://heroes.thelazy.net//index.php/File:Castle_City_Hall_large.gif"
+ },
+ "Castle_Capitol_large.gif": {
+  "local": "Castle_Capitol_large.gif",
+  "source": "https://heroes.thelazy.net//images/6/6c/Castle_Capitol_large.gif",
+  "page": "https://heroes.thelazy.net//index.php/File:Castle_Capitol_large.gif"
+ },
+ "Castle_Tavern_large.gif": {
+  "local": "Castle_Tavern_large.gif",
+  "source": "https://heroes.thelazy.net//images/2/26/Castle_Tavern_large.gif",
+  "page": "https://heroes.thelazy.net//index.php/File:Castle_Tavern_large.gif"
+ },
+ "Castle_Resource_Silo_large.gif": {
+  "local": "Castle_Resource_Silo_large.gif",
+  "source": "https://heroes.thelazy.net//images/b/b4/Castle_Resource_Silo_large.gif",
+  "page": "https://heroes.thelazy.net//index.php/File:Castle_Resource_Silo_large.gif"
+ },
+ "Castle_Marketplace_large.gif": {
+  "local": "Castle_Marketplace_large.gif",
+  "source": "https://heroes.thelazy.net//images/e/e9/Castle_Marketplace_large.gif",
+  "page": "https://heroes.thelazy.net//index.php/File:Castle_Marketplace_large.gif"
+ },
+ "Castle_Blacksmith_large.gif": {
+  "local": "Castle_Blacksmith_large.gif",
+  "source": "https://heroes.thelazy.net//images/c/cd/Castle_Blacksmith_large.gif",
+  "page": "https://heroes.thelazy.net//index.php/File:Castle_Blacksmith_large.gif"
+ },
+ "Rampart_Treasury.gif": {
+  "local": "Rampart_Treasury.gif",
+  "source": "https://heroes.thelazy.net//images/7/7f/Rampart_Treasury.gif",
+  "page": "https://heroes.thelazy.net//index.php/File:Rampart_Treasury.gif"
+ }
+}

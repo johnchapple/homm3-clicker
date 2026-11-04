@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Heroes III Clicker</title>
+<meta name="description" content="A fan-made Heroes of Might and Magic III themed idle clicker.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400;0,700;1,400&family=Cinzel:wght@700&display=swap">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="app">
+  <header class="panel slim top">
+    <h1>Heroes III Clicker</h1>
+    <div id="calendar"></div>
+  </header>
+  <div id="resbar" class="panel slim"></div>
+  <main class="layout">
+    <section class="panel col-left">
+      <div id="hero"></div>
+      <div id="goldNow" class="goldnow"></div>
+      <div id="gpsNow" class="gps"></div>
+      <button id="clicker" class="clicker" aria-label="Dig for gold"><img id="clickImg" alt=""></button>
+      <div id="clickInfo" class="fine center"></div>
+      <div id="buffs"></div>
+    </section>
+    <section class="panel col-mid">
+      <nav id="tabs" class="tabs"></nav>
+      <div id="tabBody"></div>
+    </section>
+    <section class="panel col-right">
+      <h2>Dwellings</h2>
+      <div id="townTabs" class="tabs"></div>
+      <div class="buyamt" id="buyAmt"></div>
+      <div id="dwellings"></div>
+    </section>
+  </main>
+  <footer class="fine center">Non-commercial fan project. Heroes of Might and Magic is a trademark of Ubisoft. Art via <a href="https://heroes.thelazy.net" target="_blank" rel="noopener">heroes.thelazy.net</a>.</footer>
+</div>
+<div id="tip" class="tip hidden"></div>
+<div id="toasts"></div>
+<div id="modal" class="modal hidden"><div class="panel"><div id="modalBody"></div><button id="modalClose" class="big">OK</button></div></div>
+<script src="js/data.js"></script>
+<script src="js/game.js"></script>
+</body>
+</html>

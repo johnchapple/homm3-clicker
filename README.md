@@ -1,1 +1,42 @@
-# homm3-clicker
+# Heroes III Clicker
+
+A browser idle/incremental game in the style of Cookie Clicker, themed on *Heroes of Might and Magic III*.
+Non-commercial fan project.
+
+## Play / run locally
+Plain HTML/CSS/JS, no build step. Either open `index.html` directly, or serve the folder:
+
+```bash
+python3 -m http.server 8000
+```
+
+Then visit http://localhost:8000. Add `?debug` to the URL to open the Options tab (debug speed x10/x100/x1000, free gold, spawn artifact).
+
+## Single-file build
+`node scripts/build-single.mjs` writes `dist/heroes3-clicker.html` with all CSS, JS and images inlined as data URIs.
+
+## Art assets
+- `public/ui/` – frame/leather/star UI art, shared with homm3-guess-who.
+- `public/img/` – game art downloaded from [heroes.thelazy.net](https://heroes.thelazy.net) by `node scripts/scrape.mjs`.
+  It collects every `img` file name in `js/data.js`, resolves them through the wiki's MediaWiki API, downloads them politely
+  (delay between requests, fan-project User-Agent) and records the source URLs in `public/img/manifest.json`.
+  To add art: reference the wiki file name in `js/data.js` (or pass names as arguments) and re-run the script.
+
+## Gameplay
+- Click the treasure chest for gold. Recruit creatures from dwellings (cost x1.15 per purchase).
+- Upgrades: upgraded creature forms (x3) and Veteran/Elite/Legendary drills (x2) at 25/50/100 owned.
+- Town buildings (Marketplace, Town Hall, Treasury, Capitol, ...) give global bonuses and cost wood/ore/rare resources.
+- Mines produce Wood, Ore, Mercury, Sulfur, Crystal and Gems.
+- Hero secondary skills: Estates, Leadership, Logistics, Diplomacy, Luck, Wisdom.
+- Wandering artifacts appear briefly: Endless Sack of Gold (x7 gold for 77s), Endless Purse of Gold, Angel Wings (x77 clicks), Cornucopia.
+- One in-game day = 60s. Each week a random creature gets x2 ("Week of the Griffin").
+- Find the Grail (prestige) from 1 billion lifetime gold: permanent +2% per Grail point; Grails unlock Rampart, Necropolis and Inferno.
+- Progress autosaves to localStorage every 30s; export/import in Options. Offline earnings up to 8h (50%, 100% with Treasury).
+
+## Deploy to Netlify
+It's a static site. Drag the repo folder onto https://app.netlify.com/drop, or connect the repo with
+build command empty and publish directory `.` (`netlify.toml` is included).
+
+## Credits / disclaimer
+Heroes of Might and Magic is a trademark of Ubisoft. All game art belongs to its respective owners and is sourced from the
+community wiki heroes.thelazy.net. This project is free, non-commercial, and not affiliated with Ubisoft or New World Computing.
