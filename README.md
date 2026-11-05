@@ -64,6 +64,8 @@ Original game audio is copyrighted, so it isn't committed here.
   Each has a chance to leave one of 30 **permanent artifacts**, kept through Grail resets.
 - One in-game day = 60s. Each week a random creature gets x2 ("Week of the Griffin").
 - **Find the Grail** (prestige) from 1 billion lifetime gold; points grow quickly at first and slow down later: +10% production per Grail point, forever.
+- Every purchase shows what it adds and **how long it takes to pay for itself**; ★ marks the best deal.
+- **Easy mode** (Options): wandering artifacts wait for you instead of vanishing.
 - Autosaves to localStorage every 30s; export/import in Options. Offline earnings up to 8h (50%, 100% with any Village Hall).
 
 ## Deploy to Netlify

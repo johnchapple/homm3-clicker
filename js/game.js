@@ -21,8 +21,9 @@
     const v = n / Math.pow(1000, e);
     return (v >= 100 ? v.toFixed(0) : v >= 10 ? v.toFixed(1) : v.toFixed(2)).replace(/(\.\d*?)0+$/, '$1').replace(/\.$/, '') + SUF[e];
   }
-  const fmtTime = s => { s = Math.floor(s); const h = Math.floor(s / 3600), m = Math.floor(s / 60) % 60, x = s % 60;
-    return (h ? h + 'h ' : '') + (h || m ? m + 'm ' : '') + x + 's'; };
+  const fmtTime = s => { if (!isFinite(s)) return 'never'; s = Math.floor(s); if (s >= 86400 * 365) return '> 1 year';
+    const d = Math.floor(s / 86400), h = Math.floor(s / 3600) % 24, m = Math.floor(s / 60) % 60, x = s % 60;
+    if (d) return `${d}d ${h}h`; if (h) return `${h}h ${m}m`; return (m ? m + 'm ' : '') + x + 's'; };
 
   // ---------- static tables ----------
   const TOWN = Object.fromEntries(D.TOWNS.map(t => [t.id, t]));
@@ -70,7 +71,7 @@
     res: Object.fromEntries(D.RES.map(r => [r, 0])), owned: {}, bought: {}, upg: {}, mines: {}, buildings: {}, skills: {}, dw: {}, grow: {},
     grail: keep.grail || 0, ascensions: keep.ascensions || 0, chests: keep.chests || 0, ach: keep.ach || {},
     towns: keep.towns || { castle: 1 }, relics: keep.relics || {}, hero: keep.hero || 'lord_haart', heroHires: keep.heroHires || 0,
-    trades: keep.trades || 0, time: 0, week: null, buffs: [], nextChest: 45, started: keep.started || Date.now(), lastSave: Date.now(),
+    trades: keep.trades || 0, easy: keep.easy || false, time: 0, week: null, buffs: [], nextChest: 45, started: keep.started || Date.now(), lastSave: Date.now(),
   });
   let S = fresh();
   let debugOn = /[?&]debug/.test(location.search), titleTaps = 0;
@@ -190,7 +191,7 @@
     S.buffs = S.buffs.filter(b => (b.left -= dt) > 0);
     S.nextChest -= dt;
     if (S.nextChest <= 0 && !wanderEl) spawnWander();
-    if (wanderEl && (wanderLeft -= dt) <= 0) removeWander();
+    if (wanderEl && !S.easy && (wanderLeft -= dt) <= 0) removeWander();
   }
   function newDay(day) {
     const msgs = [];
@@ -210,7 +211,7 @@
   }
 
   // ---------- actions ----------
-  const changed = () => { recalc(); dirty = true; };
+  const changed = () => { recalc(); pbCache = {}; dirty = true; };
   function doClick(ev) {
     SFX.play('click'); const v = clickValue(); earn(v); S.clicks++; S.clickGold += v;
     const r = $('clicker').getBoundingClientRect();
@@ -241,7 +242,7 @@
     const p = pendingGrail(); if (p < 1) return;
     if (!force) { ask(`<h2>Dig for the Grail?</h2><p>Your kingdom resets, but you gain <b>${fmt(p)}</b> Grail point(s) (+${fmt(p * grailPct())}% production forever).</p>`, 'Dig!', () => ascend(true)); return; }
     const keep = { lifetime: S.lifetime, clicks: S.clicks, clickGold: S.clickGold, grail: S.grail + p, ascensions: S.ascensions + 1, chests: S.chests, ach: S.ach,
-      started: S.started, towns: S.towns, relics: S.relics, hero: S.hero, heroHires: S.heroHires, trades: S.trades };
+      started: S.started, towns: S.towns, relics: S.relics, hero: S.hero, heroHires: S.heroHires, trades: S.trades, easy: S.easy };
     S = fresh(keep); removeWander(); SFX.play('grail');
     const got = unlockTowns(); changed(); save();
     const nt = D.TOWNS.find(t => !unlocked(t));
@@ -336,7 +337,8 @@
       <li><b>Click the treasure chest</b> for gold, then <b>recruit creatures</b> on the right. They earn gold every second.</li>
       <li>Build a <b>Tavern</b> and the halls in the <b>Town</b> tab, and buy <b>Upgrades</b> once you own 5 of a creature.</li>
       <li><b>Mines</b> give wood, ore and rare resources for bigger buildings. A Marketplace opens the Trading Post.</li>
-      <li>Click the <b>glowing artifacts</b> that wander across the screen for big bonuses, and sometimes a permanent artifact.</li>
+      <li>Click the <b>glowing artifacts</b> that wander across the screen for big bonuses, and sometimes a permanent artifact. Turn on <b>Easy mode</b> in Options and they wait for you.</li>
+      <li>Not sure what to buy? Each purchase shows <b>how long it takes to pay for itself</b>; ★ marks the best deal.</li>
       <li>From 1 billion gold, <b>Find the Grail</b> to restart stronger and unlock new towns.</li>
       <li>A <span class="dot">●</span> on a tab means something there is affordable. Progress saves automatically.</li></ul>`);
   }
@@ -376,7 +378,7 @@
   };
   $('tabBody').onclick = e => { const el = e.target.closest('[data-act]'); if (el && ACT[el.dataset.act]) ACT[el.dataset.act](el.dataset.id); };
   $('tabBody').onmouseover = e => { const el = e.target.closest('[data-act="upg"]'); if (el) showUpg(el.dataset.id); };
-  function showUpg(id) { const u = UPG[id], d = $('udetail'); if (d) d.innerHTML = `<b>${u.name}</b> — ${u.desc}<br>Cost: ${costHtml(upgCost(u))}`; }
+  function showUpg(id) { const u = UPG[id], d = $('udetail'); if (d) d.innerHTML = `<b>${u.name}</b> — ${u.desc}<br>Cost: ${costHtml(upgCost(u))}<br>${pbText('upg:' + id)}`; }
 
   // ---------- render ----------
   const TABS = [['upgrades', 'Upgrades'], ['town', 'Town'], ['mines', 'Mines'], ['hero', 'Hero'], ['relics', 'Artifacts'], ['grail', 'Grail'], ['achievements', 'Feats'], ['options', 'Options']];
@@ -400,7 +402,7 @@
       if (!vis) { if (shownLocked++ < 1) html += `<div class="row locked"><div class="pic"></div><div class="info"><div class="name">???</div><div class="sub">Recruit the previous creature to reveal.</div></div></div>`; return; }
       const g = growthRate(u.key);
       html += row(`data-k="${u.key}"`, IMG(S.upg[u.key + '_u'] ? u.uimg : u.img), S.upg[u.key + '_u'] ? u.upg : u.name,
-        `<span class="c"></span><br><span class="fine"><span class="each"></span>${g ? ` · +${fmt(g)}/day` : ''}${S.week === u.key ? ` <span class="week">Week x${2 + E.week}!</span>` : ''}</span>`,
+        `<span class="c"></span><br><span class="pb" data-pb="unit:${u.key}"></span><br><span class="fine"><span class="each"></span>${g ? ` · +${fmt(g)}/day` : ''}${S.week === u.key ? ` <span class="week">Week x${2 + E.week}!</span>` : ''}</span>`,
         '<span class="own"></span>', 'tall');
     });
     put($('dwellings'), html);
@@ -412,13 +414,13 @@
   function tbRow(b) {
     const built = S.buildings[b.id], locked = b.req && !S.buildings[b.req];
     return row(`data-act="tb" data-id="${b.id}"`, IMG(b.img), b.name,
-      `${b.desc}<br>${built ? '<span class="week">Built</span>' : locked ? `<span class="fine">Requires ${TBI[b.req].name}.</span>` : costHtml(b.cost)}`, built ? '✔' : '', locked ? 'cant' : '');
+      `${b.desc}<br>${built ? '<span class="week">Built</span>' : locked ? `<span class="fine">Requires ${TBI[b.req].name}.</span>` : costHtml(b.cost) + ` <span class="pb" data-pb="tb:${b.id}"></span>`}`, built ? '✔' : '', locked ? 'cant' : '');
   }
   function renderTab() {
     const body = $('tabBody');
     if (tab === 'upgrades') {
       const av = availableUpgrades(), done = UPGRADES.filter(u => S.upg[u.id]);
-      if (put(body, `<h2>Creature Upgrades</h2>` + (av.length ? `<div class="grid">${av.map(u => `<button class="ucard" data-act="upg" data-id="${u.id}"><img src="${IMG(u.img)}" alt="${u.name}"></button>`).join('')}</div>`
+      if (put(body, `<h2>Creature Upgrades</h2>` + (av.length ? `<div class="grid">${av.map(u => `<button class="ucard" data-act="upg" data-id="${u.id}"><img src="${IMG(u.img)}" alt="${u.name}"><span class="lvl pb" data-pb="upg:${u.id}" data-short="1"></span></button>`).join('')}</div>`
         : '<p class="fine">Recruit 5 of a creature to unlock its upgrade.</p>') +
         `<div class="detail" id="udetail">Hover or tap an upgrade for details. Tap again to buy.</div>` +
         (done.length ? `<h3>Purchased (${done.length})</h3><div class="grid small">${done.map(u => `<div class="ucard done" title="${u.name}"><img src="${IMG(u.img)}" alt="${u.name}"></div>`).join('')}</div>` : ''))) selUpg = null;
@@ -434,14 +436,14 @@
           `<h3>Creature Dwellings</h3><p class="fine">Each level adds HoMM3 weekly growth per in-game day (60s), free of charge. Requires a Fort. Free creatures don't raise recruiting prices.</p>` +
           UNITS.filter(u => u.town === t && u.tier > 0).map(u => { const l = S.dw[u.key] || 0;
             return row(`data-act="dw" data-id="${u.key}"`, IMG(D.dwImg(t, u.tier)), t.dw[u.tier - 1],
-              `${l ? `+${fmt(growthRate(u.key))} ${u.name}s/day` : `Grows ${D.GROWTH[u.tier]} ${u.name}s/day per level`}<br>${costHtml(dwCost(u.key))}`, l); }).join('') +
+              `${l ? `+${fmt(growthRate(u.key))} ${u.name}s/day` : `Grows ${D.GROWTH[u.tier]} ${u.name}s/day per level`}<br>${costHtml(dwCost(u.key))} <span class="pb" data-pb="dw:${u.key}"></span>`, l); }).join('') +
           `<h3>Grail Structure</h3>` + tbRow(TBI[`${t.id}_grail`]);
       }
       put(body, html);
     } else if (tab === 'mines') {
       let html = `<h2>Mines</h2><p class="fine">Flag mines to gather the resources needed for buildings, dwellings and elite upgrades.</p>` +
         D.MINES.map(m => row(`data-act="mine" data-id="${m.id}"`, IMG(m.img), m.name,
-          `+${fmt(D.MINES.find(x => x.id === m.id).rate * 60 * E.mines * (E.res[m.id] || 1) * (1 + 0.5 * skill('Mysticism')))} ${D.RES_INFO[m.id].name}/min each<br>${costHtml(mineCost(m))}`, S.mines[m.id] || 0)).join('');
+          `+${fmt(D.MINES.find(x => x.id === m.id).rate * 60 * E.mines * (E.res[m.id] || 1) * (1 + 0.5 * skill('Mysticism')))} ${D.RES_INFO[m.id].name}/min each<br>${costHtml(mineCost(m))} <span class="pb" data-pb="mine:${m.id}"></span>`, S.mines[m.id] || 0)).join('');
       html += `<h2>Trading Post</h2>` + (E.tradeOn ? `<p class="fine">Buy resources for gold. Prices follow your income.</p>` +
         D.RES.map(r => `<div class="trade"><img src="${IMG(D.RES_INFO[r].img)}" alt=""> <b>${D.RES_INFO[r].name}</b> ` +
           [10, 100, 1000].map(n => `<button data-act="trade" data-id="${r}:${n}">+${n} <span class="tp" data-tr="${r}" data-n="${n}"></span></button>`).join('') + '</div>').join('')
@@ -454,7 +456,7 @@
         <div class="grid heroes">${D.HEROES.filter(x => unlocked(TOWN[x.town])).map(x => `<button class="ucard hero ${x.id === S.hero ? 'on' : ''}" data-act="hire" data-id="${x.id}" title="${x.name}: ${x.d}"><img src="${IMG(x.img)}" alt="${x.name}"><span>${x.name}</span></button>`).join('')}</div>
         <h2>Secondary Skills</h2>` + D.SKILLS.filter(sk => !sk.town || unlocked(TOWN[sk.town])).map(sk => { const l = skill(sk.id);
         return row(`data-act="skill" data-id="${sk.id}"`, IMG(sk.imgs[Math.max(0, l - 1)]), `${l ? LV[l - 1] + ' ' : ''}${sk.id}`,
-          l < 3 ? `Next: ${sk.desc[l]}<br>${costHtml(skillCost(sk))}` : 'Mastered.', `${l}/3`); }).join(''));
+          l < 3 ? `Next: ${sk.desc[l]}<br>${costHtml(skillCost(sk))} <span class="pb" data-pb="skill:${sk.id}"></span>` : 'Mastered.', `${l}/3`); }).join(''));
     } else if (tab === 'relics') {
       const n = Object.keys(S.relics).length;
       put(body, `<h2>Artifacts (${n}/${D.RELICS.length})</h2><p class="fine">Each wandering artifact you catch has a ${Math.round(relicChance() * 100)}% chance to leave a permanent artifact. They are kept when you find the Grail.</p>
@@ -472,7 +474,7 @@
       const n = Object.keys(S.ach).length;
       put(body, `<h2>Feats (${n}/${D.ACH.length})</h2>` + D.ACH.map(a => `<div class="ach ${S.ach[a.id] ? '' : 'no'}"><img src="${UIIMG('icon.png')}" alt="" width="16" height="16"><div><b>${a.name}</b> — ${a.req}${S.ach[a.id] ? `<br><i>${a.flavor}</i>` : ''}</div></div>`).join(''));
     } else if (tab === 'options') {
-      if (put(body, `<h2>Statistics</h2><div id="stats"></div><h2>Sound</h2><button id="sndBtn">${SFX.muted ? 'Sound: off' : 'Sound: on'}</button>
+      if (put(body, `<h2>Statistics</h2><div id="stats"></div><h2>Gameplay</h2><button id="easyBtn">Easy mode: ${S.easy ? 'on' : 'off'}</button><p class="fine">Easy mode: wandering artifacts wait for you instead of vanishing after 13 seconds.</p><h2>Sound</h2><button id="sndBtn">${SFX.muted ? 'Sound: off' : 'Sound: on'}</button>
         <input type="range" id="vol" min="0" max="1" step="0.05" value="${SFX.vol}" aria-label="Volume" style="width:140px;vertical-align:middle">
         <p class="fine">Using ${SFX.hasFiles() ? 'sound files from public/sfx/' : 'synthesized sounds'}. See README to use original HoMM3 sounds.</p><h2>Save</h2>
         <button id="saveBtn">Save now</button> <button id="exportBtn">Export</button> <button id="importBtn">Import</button>
@@ -482,6 +484,7 @@
         <div class="${debugOn ? '' : 'hidden'}"><h2>Debug</h2><p class="fine">Testing tools (opened with ?debug or by tapping the title 5 times).</p><div class="buyamt" style="justify-content:flex-start;flex-wrap:wrap">${[1, 10, 100, 1000].map(n => `<button data-sp="${n}" class="${speed === n ? 'on' : ''}">x${n}</button>`).join('')}
         <button id="dbgGold">+1h gold</button><button id="dbgRes">+1000 res</button><button id="dbgGrail">Find Grail now</button><button id="dbgArt">Spawn artifact</button><button id="dbgRelic">Give artifact</button></div></div>`)) {
         $('helpBtn').onclick = help;
+        $('easyBtn').onclick = () => { S.easy = !S.easy; if (S.easy && wanderEl) wanderLeft = 13; dirty = true; toast(`Easy mode ${S.easy ? 'on: artifacts wait for you' : 'off'}.`); };
         $('sndBtn').onclick = () => { SFX.setMuted(!SFX.muted); dirty = true; };
         $('vol').oninput = e => SFX.setVol(+e.target.value);
         $('saveBtn').onclick = () => { save(); toast('Game saved.'); };
@@ -496,6 +499,44 @@
         $('dbgRelic').onclick = () => { const m = D.RELICS.filter(x => !S.relics[x.id]); if (m.length) { S.relics[m[0].id] = Date.now(); changed(); toast(`Got ${m[0].name}`); } };
       }
     }
+  }
+
+  // ---------- value / payback ("is this worth it?") ----------
+  // What a purchase adds: dg = gold/sec (without temporary buffs), dc = gold per click. Measured by applying the
+  // purchase to the state, recomputing, and undoing it. Cached until anything changes.
+  let pbCache = {};
+  function value(key) {
+    if (pbCache[key]) return pbCache[key];
+    const [type, id] = key.split(':'); const g0 = gps(false), c0 = clickValue(); let r = { dg: 0, dc: 0 };
+    const measure = (apply, undo, eff) => { apply(); if (eff) recalc(); r = { dg: gps(false) - g0, dc: clickValue() - c0 }; undo(); if (eff) recalc(); };
+    if (type === 'unit') r = { dg: unitGps(id) * globalMult(false), dc: 0 };
+    else if (type === 'upg') measure(() => S.upg[id] = 1, () => delete S.upg[id]);
+    else if (type === 'tb') measure(() => S.buildings[id] = 1, () => delete S.buildings[id], true);
+    else if (type === 'skill') { const l = skill(id); measure(() => S.skills[id] = l + 1, () => S.skills[id] = l); }
+    else if (type === 'dw') { const before = growthRate(id); S.dw[id] = (S.dw[id] || 0) + 1; const add = growthRate(id) - before; S.dw[id]--; if (!S.dw[id]) delete S.dw[id];
+      r = { grow: add / DAY_LEN, ug: unitGps(id) * globalMult(false) }; }   // creatures/sec and gold/sec per creature
+    else if (type === 'mine') { const m = D.MINES.find(x => x.id === id); r = { res: m.rate * E.mines * (E.res[id] || 1) * (1 + 0.5 * skill('Mysticism')) * 60 }; }
+    return (pbCache[key] = r);
+  }
+  function goldCost(key) {
+    const [type, id] = key.split(':');
+    if (type === 'unit') return unitCost(id, 1);
+    if (type === 'upg') return upgCost(UPG[id]).gold; if (type === 'tb') return TBI[id].cost.gold;
+    if (type === 'skill') return skillCost(D.SKILLS.find(s => s.id === id)).gold; if (type === 'dw') return dwCost(id).gold;
+    if (type === 'mine') return mineCost(D.MINES.find(m => m.id === id)).gold;
+  }
+  // seconds of the new income needed to earn back the gold spent (dwellings: their creatures accumulate, so solve c = ug*grow*t^2/2)
+  function payback(key) {
+    const v = value(key), c = goldCost(key);
+    if (v.grow) return Math.sqrt(2 * c / (v.grow * v.ug || 1e-300));
+    return v.dg > 0 ? c / v.dg : Infinity;
+  }
+  function pbText(key, short) {
+    const v = value(key), c = goldCost(key);
+    if (v.res) return short ? '' : `≈ ${fmt(c / v.res)} gold per +1/min`;
+    if (v.grow || v.dg > 0) { const t = payback(key); return short ? fmtTime(t).split(' ')[0] : `+${fmt(v.grow ? v.grow * DAY_LEN : v.dg)}${v.grow ? ' creatures/day' : ' gold/s'} · pays back in ${fmtTime(t)}`; }
+    if (v.dc > 0) return short ? 'click' : `+${fmt(v.dc)} per click`;
+    return '';
   }
 
   // ---------- per-frame numbers (text only, never replaces interactive elements) ----------
@@ -534,6 +575,15 @@
       hero: D.SKILLS.some(sk => (!sk.town || unlocked(TOWN[sk.town])) && skill(sk.id) < 3 && canAfford(skillCost(sk))) };
     $('tabs').querySelectorAll('[data-t]').forEach(b => b.classList.toggle('avail', !!av[b.dataset.t]));
     $('tabBody').querySelectorAll('[data-act="sub"]').forEach(b => b.classList.toggle('avail', !!townAv[b.dataset.id]));
+    // payback labels + best-deal stars
+    const best = {};
+    document.querySelectorAll('.pb[data-pb]').forEach(el => {
+      const k = el.dataset.pb; el.textContent = pbText(k, el.dataset.short);
+      const grp = el.closest('#dwellings') ? 'dw' : 'tab', t = payback(k);
+      if (isFinite(t) && (!best[grp] || t < best[grp].t)) best[grp] = { t, el };
+      el.classList.remove('best');
+    });
+    Object.values(best).forEach(b => b.el.classList.add('best'));
     if (tab === 'options' && $('stats')) {
       put($('stats'), [['Gold this run', fmt(S.runEarned)], ['Lifetime gold', fmt(S.lifetime)], ['Clicks', fmt(S.clicks)], ['Gold from clicks', fmt(S.clickGold)],
         ['Creatures', fmt(totalUnits())], ['Hero level', heroLevel()], ['Artifacts found', S.chests], ['Permanent artifacts', Object.keys(S.relics).length],
@@ -554,7 +604,7 @@
     // structural changes worth a re-render (cheap: put() skips identical markup)
     const sig = availableUpgrades().length + '|' + (pendingGrail() >= 1) + '|' + heroLevel() + '|' + S.buffs.length + '|' + Object.keys(S.owned).length;
     if (sig !== lastSig) { lastSig = sig; dirty = true; }
-    if (dirty) { dirty = false; renderTabs(); renderDwellings(); renderTab(); sinceUi = 1; }
+    if (dirty) { pbCache = {}; dirty = false; renderTabs(); renderDwellings(); renderTab(); sinceUi = 1; }
     if (sinceUi >= 0.2) { sinceUi = 0; updateNumbers(); }
     if (sinceAch >= 1) { sinceAch = 0; checkAch(); }
     if (sinceSave >= 30) { sinceSave = 0; save(); }
