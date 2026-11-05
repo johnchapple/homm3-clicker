@@ -338,7 +338,7 @@
       <li>Build a <b>Tavern</b> and the halls in the <b>Town</b> tab, and buy <b>Upgrades</b> once you own 5 of a creature.</li>
       <li><b>Mines</b> give wood, ore and rare resources for bigger buildings. A Marketplace opens the Trading Post.</li>
       <li>Click the <b>glowing artifacts</b> that wander across the screen for big bonuses, and sometimes a permanent artifact. Turn on <b>Easy mode</b> in Options and they wait for you.</li>
-      <li>Not sure what to buy? Each purchase shows <b>how long it takes to pay for itself</b>; ★ marks the best deal.</li>
+      <li>Not sure what to buy? Each purchase shows its <b>ratio</b> (gold cost per +1 gold/sec; lower is better) and payback time; ★ marks the best deal.</li>
       <li>From 1 billion gold, <b>Find the Grail</b> to restart stronger and unlock new towns.</li>
       <li>A <span class="dot">●</span> on a tab means something there is affordable. Progress saves automatically.</li></ul>`);
   }
@@ -534,7 +534,10 @@
   function pbText(key, short) {
     const v = value(key), c = goldCost(key);
     if (v.res) return short ? '' : `≈ ${fmt(c / v.res)} gold per +1/min`;
-    if (v.grow || v.dg > 0) { const t = payback(key); return short ? fmtTime(t).split(' ')[0] : `+${fmt(v.grow ? v.grow * DAY_LEN : v.dg)}${v.grow ? ' creatures/day' : ' gold/s'} · pays back in ${fmtTime(t)}`; }
+    if (v.grow || v.dg > 0) {
+      // ratio = gold cost per +1 gold/sec (lower is better). Dwellings: per gold/sec added by one day of growth.
+      const ratio = c / (v.grow ? v.grow * DAY_LEN * v.ug : v.dg), t = payback(key);
+      return short ? fmt(ratio) : `+${fmt(v.grow ? v.grow * DAY_LEN : v.dg)}${v.grow ? ' creatures/day' : ' gold/s'} · ratio <b>${fmt(ratio)}</b> · pays back in ${fmtTime(t)}`; }
     if (v.dc > 0) return short ? 'click' : `+${fmt(v.dc)} per click`;
     return '';
   }
@@ -578,7 +581,7 @@
     // payback labels + best-deal stars
     const best = {};
     document.querySelectorAll('.pb[data-pb]').forEach(el => {
-      const k = el.dataset.pb; el.textContent = pbText(k, el.dataset.short);
+      const k = el.dataset.pb, h = pbText(k, el.dataset.short); if (el._h !== h) { el._h = h; el.innerHTML = h; }
       const grp = el.closest('#dwellings') ? 'dw' : 'tab', t = payback(k);
       if (isFinite(t) && (!best[grp] || t < best[grp].t)) best[grp] = { t, el };
       el.classList.remove('best');
