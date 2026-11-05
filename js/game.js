@@ -443,7 +443,7 @@
     } else if (tab === 'mines') {
       let html = `<h2>Mines</h2><p class="fine">Flag mines to gather the resources needed for buildings, dwellings and elite upgrades.</p>` +
         D.MINES.map(m => row(`data-act="mine" data-id="${m.id}"`, IMG(m.img), m.name,
-          `+${fmt(D.MINES.find(x => x.id === m.id).rate * 60 * E.mines * (E.res[m.id] || 1) * (1 + 0.5 * skill('Mysticism')))} ${D.RES_INFO[m.id].name}/min each<br>${costHtml(mineCost(m))} <span class="pb" data-pb="mine:${m.id}"></span>`, S.mines[m.id] || 0)).join('');
+          `+${fmt(D.MINES.find(x => x.id === m.id).rate * 60 * E.mines * (E.res[m.id] || 1) * (1 + 0.5 * skill('Mysticism')))} ${D.RES_INFO[m.id].name}/min each<br>${costHtml(mineCost(m))}`, S.mines[m.id] || 0)).join('');
       html += `<h2>Trading Post</h2>` + (E.tradeOn ? `<p class="fine">Buy resources for gold. Prices follow your income.</p>` +
         D.RES.map(r => `<div class="trade"><img src="${IMG(D.RES_INFO[r].img)}" alt=""> <b>${D.RES_INFO[r].name}</b> ` +
           [10, 100, 1000].map(n => `<button data-act="trade" data-id="${r}:${n}">+${n} <span class="tp" data-tr="${r}" data-n="${n}"></span></button>`).join('') + '</div>').join('')
@@ -533,7 +533,6 @@
   }
   function pbText(key, short) {
     const v = value(key), c = goldCost(key);
-    if (v.res) return short ? '' : `≈ ${fmt(c / v.res)} gold per +1/min`;
     if (v.grow || v.dg > 0) {
       // ratio = gold cost per +1 gold/sec (lower is better). Dwellings: per gold/sec added by one day of growth.
       const ratio = c / (v.grow ? v.grow * DAY_LEN * v.ug : v.dg), t = payback(key);
