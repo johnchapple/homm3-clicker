@@ -94,3 +94,8 @@ footer{margin:8px 0 20px}
 .ucard img{width:100%;height:100%;max-width:none;max-height:none;object-fit:cover}
 .ucard.hero img{height:auto;aspect-ratio:58/64}
 .ucard{padding:0}
+.avail::after{content:' ●';color:var(--green)}
+.help{padding-left:1.1em;margin:.4em 0}.help li{margin:.35em 0}.dot{color:var(--green)}
+#app h1{cursor:default;user-select:none}
+.modal .panel{max-height:90vh;overflow:auto}
+@media(max-width:700px){#toasts{max-width:240px;bottom:6px;right:6px}.toast{font-size:.78em;padding:2px 6px}}

@@ -10,10 +10,15 @@ Plain HTML/CSS/JS, no build step. Either open `index.html` directly, or serve th
 python3 -m http.server 8000
 ```
 
-Then visit http://localhost:8000. Add `?debug` to the URL to open the Options tab (debug speed x10/x100/x1000, free gold, spawn artifact, find Grail now).
+Then visit http://localhost:8000. Debug tools are hidden by default: add `?debug` to the URL or tap the title 5 times (speed x10/x100/x1000, free gold, spawn artifact, find Grail now).
 
 ## Single-file build
 `node scripts/build-single.mjs` writes `dist/heroes3-clicker.html` with all CSS, JS and images inlined as data URIs.
+
+## Balance testing
+`node scripts/balance-sim.mjs [hours]` runs a greedy bot through the real game in headless Chromium at high speed and prints
+when milestones happen (first Grail, each town unlock, gold/sec thresholds). Last run (cautious bot that only digs when it can
+double its Grail points): first Grail ~44 min, Necropolis ~6 h, Inferno ~9.5 h of active play.
 
 ## Art assets
 - `public/ui/` – frame/leather/star UI art, shared with homm3-guess-who.
@@ -46,7 +51,7 @@ Original game audio is copyrighted, so it isn't committed here.
 ## Gameplay
 - Click the treasure chest for gold. Recruit creatures (price x1.15 per creature *bought*).
 - **Nine towns**: Castle, Rampart, Necropolis, Inferno, Tower, Dungeon, Stronghold, Fortress, Conflux, each ~1000x the previous.
-  Towns unlock at Grail point thresholds (1, 10, 40, 150, 600, 2.5K, 10K, 40K).
+  Towns unlock at Grail point thresholds (1, 100, 350, 800, 1.4K, 2.2K, 3.2K, 4.5K); points grow with the log of lifetime gold.
 - **Upgrades**: upgraded creature forms (x3) and Veteran/Elite/Legendary drills (x2) at 25/50/100 owned.
 - **Town tab**, per town: Village Hall → Town Hall → City Hall → Capitol (boost that town's creatures), Tavern, Blacksmith,
   Marketplace, Resource Silo, Mage Guild (kingdom-wide bonuses that stack across towns), Fort → Citadel → Castle,
@@ -58,7 +63,7 @@ Original game audio is copyrighted, so it isn't committed here.
 - **Wandering artifacts**: Endless Sack of Gold (x7 gold for 77s, rare), Endless Purse of Gold, Angel Wings, Cornucopia.
   Each has a chance to leave one of 30 **permanent artifacts**, kept through Grail resets.
 - One in-game day = 60s. Each week a random creature gets x2 ("Week of the Griffin").
-- **Find the Grail** (prestige) from 1 billion lifetime gold: +2% production per Grail point, forever.
+- **Find the Grail** (prestige) from 1 billion lifetime gold; points grow quickly at first and slow down later: +10% production per Grail point, forever.
 - Autosaves to localStorage every 30s; export/import in Options. Offline earnings up to 8h (50%, 100% with any Village Hall).
 
 ## Deploy to Netlify

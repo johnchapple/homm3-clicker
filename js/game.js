@@ -73,6 +73,7 @@
     trades: keep.trades || 0, time: 0, week: null, buffs: [], nextChest: 45, started: keep.started || Date.now(), lastSave: Date.now(),
   });
   let S = fresh();
+  let debugOn = /[?&]debug/.test(location.search), titleTaps = 0;
   let speed = 1, buyN = 1, tab = 'upgrades', townTab = 'castle', townSub = 'castle', dirty = true;
 
   // ---------- effects ----------
@@ -99,7 +100,9 @@
   const skill = id => S.skills[id] || 0;
   const tri = l => l * (l + 1) / 2;
   const heroLevel = () => 1 + Math.floor(Math.log10(S.runEarned + 1) * 1.5);
-  const grailMult = () => 1 + S.grail * (0.02 + 0.01 * skill('Wisdom') + E.grailBonus);
+  const GRAIL_PCT = 0.1;
+  const grailPct = () => (GRAIL_PCT + 0.02 * skill('Wisdom') + E.grailBonus) * 100;
+  const grailMult = () => 1 + S.grail * (GRAIL_PCT + 0.02 * skill('Wisdom') + E.grailBonus);
   const hasBuff = id => S.buffs.some(b => b.id === id);
   const unlocked = t => !!S.towns[t.id];
   function unitMult(key) {
@@ -155,7 +158,9 @@
   const artPower = () => E.artPower * (1 + 0.5 * skill('Sorcery'));
   const relicChance = () => Math.min(0.9, 0.1 * E.artDrop);
   const necroFrac = () => E.necro + (unlocked(TOWN.necropolis) ? 0.005 * skill('Necromancy') : 0);
-  const grailTotal = l => Math.floor(Math.cbrt(l / 1e9));
+  // Grail points grow with the log of lifetime gold: quick early, slower later, so towns can't be skipped.
+  const grailTotal = l => l < 1e9 ? 0 : Math.floor(5 * Math.pow(Math.log10(l) - 8, 2.2));
+  const grailNeed = p => Math.pow(10, 8 + Math.pow(p / 5, 1 / 2.2));   // lifetime gold for p total points
   const pendingGrail = () => Math.max(0, grailTotal(S.lifetime) - S.grail);
   const totalUnits = () => Object.values(S.owned).reduce((a, b) => a + b, 0);
 
@@ -234,7 +239,7 @@
   }
   function ascend(force) {
     const p = pendingGrail(); if (p < 1) return;
-    if (!force) { ask(`<h2>Dig for the Grail?</h2><p>Your kingdom resets, but you gain <b>${fmt(p)}</b> Grail point(s) (+${fmt(p * 2)}% production forever).</p>`, 'Dig!', () => ascend(true)); return; }
+    if (!force) { ask(`<h2>Dig for the Grail?</h2><p>Your kingdom resets, but you gain <b>${fmt(p)}</b> Grail point(s) (+${fmt(p * grailPct())}% production forever).</p>`, 'Dig!', () => ascend(true)); return; }
     const keep = { lifetime: S.lifetime, clicks: S.clicks, clickGold: S.clickGold, grail: S.grail + p, ascensions: S.ascensions + 1, chests: S.chests, ach: S.ach,
       started: S.started, towns: S.towns, relics: S.relics, hero: S.hero, heroHires: S.heroHires, trades: S.trades };
     S = fresh(keep); removeWander(); SFX.play('grail');
@@ -303,6 +308,7 @@
     if (!o.bought) o.bought = { ...(o.owned || {}) };
     S = { ...base, ...o, res: { ...base.res, ...(o.res || {}) }, v: 2 };
     if (!HERO[S.hero]) S.hero = 'lord_haart';
+    S.grail = Math.min(S.grail, Math.max(grailTotal(S.lifetime), 1));   // rescale saves from the old cube-root formula
     unlockTowns(); recalc();
   }
   function offline() {
@@ -323,7 +329,16 @@
   function put(el, html) { if (el._h !== html) { el._h = html; el.innerHTML = html; return true; } return false; }
   function toast(html) {
     const t = document.createElement('div'); t.className = 'toast'; t.innerHTML = html; $('toasts').appendChild(t);
-    setTimeout(() => t.remove(), 5000); while ($('toasts').children.length > 4) $('toasts').firstChild.remove();
+    setTimeout(() => t.remove(), 5000); while ($('toasts').children.length > (innerWidth < 700 ? 2 : 4)) $('toasts').firstChild.remove();
+  }
+  function help() {
+    modal(`<h2>How to play</h2><ul class="help">
+      <li><b>Click the treasure chest</b> for gold, then <b>recruit creatures</b> on the right. They earn gold every second.</li>
+      <li>Build a <b>Tavern</b> and the halls in the <b>Town</b> tab, and buy <b>Upgrades</b> once you own 5 of a creature.</li>
+      <li><b>Mines</b> give wood, ore and rare resources for bigger buildings. A Marketplace opens the Trading Post.</li>
+      <li>Click the <b>glowing artifacts</b> that wander across the screen for big bonuses, and sometimes a permanent artifact.</li>
+      <li>From 1 billion gold, <b>Find the Grail</b> to restart stronger and unlock new towns.</li>
+      <li>A <span class="dot">●</span> on a tab means something there is affordable. Progress saves automatically.</li></ul>`);
   }
   // In-game dialogs. Native confirm() is blocked in sandboxed iframes (like the artifact preview), so never use it.
   let onYes = null;
@@ -435,7 +450,7 @@
     } else if (tab === 'hero') {
       const h = HERO[S.hero];
       put(body, `<h2>${h.name}</h2><div class="herobox"><img src="${IMG(h.img)}" alt=""><div>Level <b>${heroLevel()}</b> (+${(heroLevel() - 1) * 2}% gold; levels come from gold earned this run)<br>Specialty: <b>${h.spec}</b> — ${h.d}</div></div>
-        <h2>Tavern</h2><p class="fine">You lead with one hero at a time; hiring another replaces their specialty. Secondary skills belong to your kingdom and are kept, and hero level comes from gold earned this run, so it carries over too. Hire a different hero. Free during the first in-game day of a run, otherwise <span class="hc"></span> gold. Heroes from a town appear once it is unlocked.</p>
+        <h2>Tavern</h2><p class="fine">You lead with one hero at a time; hiring another replaces their specialty. Secondary skills belong to your kingdom and are kept, and hero level comes from gold earned this run, so it carries over too. Hire a different hero. Free during the first in-game day of a run, otherwise it costs 10 minutes of income (now: <span class="hc"></span>). Heroes from a town appear once it is unlocked.</p>
         <div class="grid heroes">${D.HEROES.filter(x => unlocked(TOWN[x.town])).map(x => `<button class="ucard hero ${x.id === S.hero ? 'on' : ''}" data-act="hire" data-id="${x.id}" title="${x.name}: ${x.d}"><img src="${IMG(x.img)}" alt="${x.name}"><span>${x.name}</span></button>`).join('')}</div>
         <h2>Secondary Skills</h2>` + D.SKILLS.filter(sk => !sk.town || unlocked(TOWN[sk.town])).map(sk => { const l = skill(sk.id);
         return row(`data-act="skill" data-id="${sk.id}"`, IMG(sk.imgs[Math.max(0, l - 1)]), `${l ? LV[l - 1] + ' ' : ''}${sk.id}`,
@@ -446,9 +461,9 @@
         <div class="grid">${D.RELICS.map(a => S.relics[a.id] ? `<div class="ucard done" title="${a.name}: ${a.d}"><img src="${IMG(a.img)}" alt="${a.name}"></div>` : `<div class="ucard cant" title="???"><span class="q">?</span></div>`).join('')}</div>
         <div class="detail">${D.RELICS.filter(a => S.relics[a.id]).map(a => `<b>${a.name}</b>: ${a.d}`).join('<br>') || 'None found yet.'}</div>`);
     } else if (tab === 'grail') {
-      const p = pendingGrail(), next = Math.pow(grailTotal(S.lifetime) + 1, 3) * 1e9;
+      const p = pendingGrail(), next = grailNeed(grailTotal(S.lifetime) + 1);
       put(body, `<h2>Find the Grail</h2><div class="center"><img src="${IMG(D.UI_IMG.grail)}" alt="Grail" style="width:82px"></div>
-        <p>Grail points: <b>${fmt(S.grail)}</b> (+${fmt(S.grail * (2 + skill('Wisdom') + E.grailBonus * 100))}% all production). Grails found: <b>${S.ascensions}</b>.</p>
+        <p>Grail points: <b>${fmt(S.grail)}</b> (+${fmt(S.grail * grailPct())}% all production; ${fmt(grailPct())}% per point). Grails found: <b>${S.ascensions}</b>.</p>
         <p>Digging now would yield <b>${fmt(p)}</b> Grail point(s). Next point at ${fmt(next)} lifetime gold (you have ${fmt(S.lifetime)}).</p>
         <h3>Towns</h3>${D.TOWNS.map(t => `<div class="stat"><span>${t.name}</span><b>${unlocked(t) ? '✔ unlocked' : `${fmt(t.grail)} Grail points`}</b></div>`).join('')}
         <p class="fine">Resets gold, creatures, upgrades, buildings, dwellings, mines and skills. Keeps Grail points, towns, your hero, permanent artifacts and achievements.</p>
@@ -463,8 +478,10 @@
         <button id="saveBtn">Save now</button> <button id="exportBtn">Export</button> <button id="importBtn">Import</button>
         <textarea id="saveText" placeholder="Export string appears here; paste one to import."></textarea>
         <button id="resetBtn">Hard reset</button>
-        <h2>Debug</h2><p class="fine">Speed multiplier for testing.</p><div class="buyamt" style="justify-content:flex-start;flex-wrap:wrap">${[1, 10, 100, 1000].map(n => `<button data-sp="${n}" class="${speed === n ? 'on' : ''}">x${n}</button>`).join('')}
-        <button id="dbgGold">+1h gold</button><button id="dbgRes">+1000 res</button><button id="dbgGrail">Find Grail now</button><button id="dbgArt">Spawn artifact</button><button id="dbgRelic">Give artifact</button></div>`)) {
+        <button id="helpBtn">How to play</button>
+        <div class="${debugOn ? '' : 'hidden'}"><h2>Debug</h2><p class="fine">Testing tools (opened with ?debug or by tapping the title 5 times).</p><div class="buyamt" style="justify-content:flex-start;flex-wrap:wrap">${[1, 10, 100, 1000].map(n => `<button data-sp="${n}" class="${speed === n ? 'on' : ''}">x${n}</button>`).join('')}
+        <button id="dbgGold">+1h gold</button><button id="dbgRes">+1000 res</button><button id="dbgGrail">Find Grail now</button><button id="dbgArt">Spawn artifact</button><button id="dbgRelic">Give artifact</button></div></div>`)) {
+        $('helpBtn').onclick = help;
         $('sndBtn').onclick = () => { SFX.setMuted(!SFX.muted); dirty = true; };
         $('vol').oninput = e => SFX.setVol(+e.target.value);
         $('saveBtn').onclick = () => { save(); toast('Game saved.'); };
@@ -474,7 +491,7 @@
         body.querySelectorAll('[data-sp]').forEach(b => b.onclick = () => { speed = +b.dataset.sp; dirty = true; });
         $('dbgGold').onclick = () => earn(Math.max(1000, gps(false) * 3600));
         $('dbgRes').onclick = () => { D.RES.forEach(r => S.res[r] += 1000); };
-        $('dbgGrail').onclick = () => { S.lifetime = Math.max(S.lifetime, Math.pow(grailTotal(S.lifetime) + Math.max(1, Math.ceil(S.grail * 0.5)), 3) * 1e9); ascend(true); };
+        $('dbgGrail').onclick = () => { S.lifetime = Math.max(S.lifetime, grailNeed(grailTotal(S.lifetime) + Math.max(1, Math.ceil(S.grail * 0.5))) * 1.0001); ascend(true); };
         $('dbgArt').onclick = () => { if (wanderEl) removeWander(); spawnWander(); };
         $('dbgRelic').onclick = () => { const m = D.RELICS.filter(x => !S.relics[x.id]); if (m.length) { S.relics[m[0].id] = Date.now(); changed(); toast(`Got ${m[0].name}`); } };
       }
@@ -499,7 +516,7 @@
       el.querySelector('.own').textContent = fmt(S.owned[k] || 0, 0);
       el.querySelector('.each').textContent = `${fmt(unitGps(k) * globalMult())}/s each`;
     });
-    const hc = $('tabBody').querySelector('.hc'); if (hc) hc.textContent = fmt(hireCost());
+    const hc = $('tabBody').querySelector('.hc'); if (hc) hc.textContent = hireCost() ? fmt(hireCost()) + ' gold' : 'free right now';
     document.querySelectorAll('.tp[data-tr]').forEach(el => { const c = tradePrice(el.dataset.tr) * +el.dataset.n; el.textContent = `(${fmt(c)}g)`; el.parentNode.disabled = S.gold < c; });
     document.querySelectorAll('.cost span[data-r]').forEach(el => el.classList.toggle('no', have(el.dataset.r) < +el.dataset.v - 1e-9));
     $('tabBody').querySelectorAll('[data-act]').forEach(el => {
@@ -509,6 +526,14 @@
       const locked = (a === 'tb' && TBI[id].req && !S.buildings[TBI[id].req]) || (a === 'dw' && !S.buildings[UNIT[id].town.id + '_fort']);
       if (c || locked) el.classList.toggle('cant', locked || !canAfford(c));
     });
+    // "something affordable" markers: toggle classes only, never rebuild the buttons
+    const townAv = {};
+    for (const t of D.TOWNS) if (unlocked(t)) townAv[t.id] = TB.some(b => b.town === t && !S.buildings[b.id] && (!b.req || S.buildings[b.req]) && canAfford(b.cost)) ||
+      (S.buildings[t.id + '_fort'] && UNITS.some(u => u.town === t && u.tier > 0 && canAfford(dwCost(u.key))));
+    const av = { upgrades: availableUpgrades().some(u => canAfford(upgCost(u))), town: Object.values(townAv).some(Boolean),
+      hero: D.SKILLS.some(sk => (!sk.town || unlocked(TOWN[sk.town])) && skill(sk.id) < 3 && canAfford(skillCost(sk))) };
+    $('tabs').querySelectorAll('[data-t]').forEach(b => b.classList.toggle('avail', !!av[b.dataset.t]));
+    $('tabBody').querySelectorAll('[data-act="sub"]').forEach(b => b.classList.toggle('avail', !!townAv[b.dataset.id]));
     if (tab === 'options' && $('stats')) {
       put($('stats'), [['Gold this run', fmt(S.runEarned)], ['Lifetime gold', fmt(S.lifetime)], ['Clicks', fmt(S.clicks)], ['Gold from clicks', fmt(S.clickGold)],
         ['Creatures', fmt(totalUnits())], ['Hero level', heroLevel()], ['Artifacts found', S.chests], ['Permanent artifacts', Object.keys(S.relics).length],
@@ -537,11 +562,18 @@
 
   // ---------- boot ----------
   recalc();
-  try { const s = localStorage.getItem(SAVE_KEY); if (s) { load(s); offline(); } } catch (e) { console.warn('Could not load save', e); }
-  if (/[?&]debug/.test(location.search)) { tab = 'options'; }
+  let hadSave = false;
+  try { const s = localStorage.getItem(SAVE_KEY); if (s) { hadSave = true; load(s); offline(); } } catch (e) { console.warn('Could not load save', e); }
+  if (!hadSave && !navigator.webdriver) help();
+  document.querySelector('h1').addEventListener('click', () => { if (++titleTaps >= 5) { titleTaps = 0; debugOn = !debugOn; tab = 'options'; dirty = true; toast(`Debug tools ${debugOn ? 'shown' : 'hidden'}.`); } });
+  if (debugOn) { tab = 'options'; }
   dirty = true; frame();
   setInterval(frame, 50);
   addEventListener('beforeunload', save);
   document.addEventListener('visibilitychange', () => { if (document.hidden) save(); });
   window.HC = { get state() { return S; }, gps, fmt, recalc, setSpeed: n => { speed = n; } }; // console helpers
+  // internals for automated balance testing (scripts/sim)
+  HC.api = { UNITS, UPGRADES, TB, D, unitCost, upgCost, dwCost, mineCost, skillCost, canAfford, pendingGrail, unitGps, globalMult, heroLevel,
+    buyUnit: k => { const n = buyN; buyN = 1; buyUnit(k); buyN = n; }, buyUpg, buyTB, buyDw, buyMine, buySkill, trade, hire, ascend, doClick, tradePrice, unlocked,
+    get E() { return E; }, clickValue };
 })();
